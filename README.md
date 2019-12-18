@@ -47,7 +47,7 @@ Using the Provider
 ----------------------
 The majority of code for this provider is automatically generated using *Metadata* about each ServiceNow CMDB Configuration Item by pulling the Meta Data from ServiceNow and using *go templates* to generate the resource files.
 
-Refer to the documentation on how the [build source](https://github.com/philw764/Servicenowcmdb/tree/master/generateprovidersource) utility functions. 
+Refer to the documentation on how the [build provider source files](https://github.com/philw764/terraform-provider-servicenowcmdb/tree/master/servicenowcmdb/generateprovidersource) utility functions. 
 Testing the Provider
 ---------------------------
 Testing of the ServiceNow CMDB has not been developed yet, this is one of the priorities now that the concept has been proven.  There is significant re-factoring required for this provider because I was learning coding in *go* at the same time.
