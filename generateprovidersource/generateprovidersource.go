@@ -20,11 +20,11 @@ func main() {
 	var CiList []client.CmdbCIMetaModel
 	//CiList, count, err := snowClient.ReadCIs(client.BaseClass, 0, CiList)
 
-	CiList, count, err := snowClient.ReadCIs("cmdb_ci_server", 0, CiList)
+	CiList, count, err := snowClient.ReadCIs("cmdb_ci", 0, CiList)
 	if err != nil {
 		fmt.Println("Failed to get data. Is ServiceNow running?  If it is, check credentials as correct")
 	}
-	_ = client.GenerateControlFlagFile(CiList)
+	//_ = flags.GenerateControlFlagFile(CiList)
 	for ci := range CiList {
 		snowClient.WriteCIStructToFile(CiList[ci])
 	}

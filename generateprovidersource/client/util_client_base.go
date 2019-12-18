@@ -10,6 +10,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"terraform-provider-servicenowcmdb/servicenowcmdb/generateprovidersource/flags"
 	"text/template"
 )
 
@@ -113,12 +114,10 @@ func (client *Client) requestJSON(method string, path string, jsonData interface
 
 func (client *Client) WriteCIStructToFile(ci CmdbCIMetaModel) error {
 
-	//ci.CiName = CamelCaseString(ci.Result.Name)
-	//ci.CiLabel = strings.ToLower(strings.ReplaceAll(ci.Result.Label, " ", "_"))
-	//ci.CiLabelCamelCase = CamelCaseString(ci.Result.Label)
 	for Attribute := range ci.Result.Attributes {
 		attrs := &ci.Result.Attributes[Attribute]
 		attrs.AttributeCamelCase = CamelCaseString(attrs.Element)
+		attrs.AttrFlags = flags.Get(ci.CiLabelCamelCase, attrs.AttributeCamelCase)
 
 		if isBaseCIAttribute(attrs.Element, BaseCI) || ci.Result.Name == "cmdb_ci" {
 			attrs.IsBaseAttr = true
@@ -145,6 +144,17 @@ func (client *Client) WriteCIStructToFile(ci CmdbCIMetaModel) error {
 	}
 	return nil
 }
+
+func IsValidCi (ci string) bool {
+	if strings.Contains(ci, "cmdb_ci_endpoing") {
+		return false
+	}
+	if strings.Contains(ci, "cmdb_ci") {
+		return true
+	}
+	return false
+
+}
 // This function connects to ServiceNow using the MetaData API to pull the details for every CI in
 // the CMDB.
 func (client *Client) ReadCIs(Class string, count int, ciClassList []CmdbCIMetaModel) ([]CmdbCIMetaModel, int, error) {
@@ -153,7 +163,8 @@ func (client *Client) ReadCIs(Class string, count int, ciClassList []CmdbCIMetaM
 	// the recursion.
 
 	//TODO: hard code only getting 10 classes during dev and test
-	if Class == "" || count == 4 {
+	//if Class == "" || count == 50 {
+	if Class == "" {
 		return ciClassList, count, nil
 	}
 
@@ -164,14 +175,26 @@ func (client *Client) ReadCIs(Class string, count int, ciClassList []CmdbCIMetaM
 		return ciClassList, count, err
 	}
 	count++
+
 	ci.CiName = Class
 	ci.Version = Version
 	ci.GeneratorVersion = BuildNumber
-	ci.CiNameCamelCase = CamelCaseString(Class)
+
 	ci.CiLabel = strings.ToLower(strings.ReplaceAll(ci.Result.Label, " ", "_"))
-	ci.CiLabelCamelCase = CamelCaseString(ci.Result.Label)
+
+	ci.CiLabel = strings.ReplaceAll(ci.CiLabel, "-", "")
+	ci.CiLabel = strings.ReplaceAll(ci.CiLabel, "/", "")
+	ci.CiLabel = strings.ReplaceAll(ci.CiLabel, ".", "Dot")
+	ci.CiName  = strings.ReplaceAll(ci.CiName, "-", "")
+	ci.CiName = strings.ReplaceAll(ci.CiName, "-", "")
+	ci.CiLabel = strings.ReplaceAll(ci.CiName, ".", "Dot")
+
+
+	ci.CiLabelCamelCase = CamelCaseString(ci.CiLabel)
+	ci.CiNameCamelCase = CamelCaseString(ci.CiName)
 
 	ciClassList = append(ciClassList, ci)
+
 
 	fmt.Println("The current CI being looked at:" + Class + "\tCount is:" + strconv.Itoa(count))
 
@@ -181,7 +204,9 @@ func (client *Client) ReadCIs(Class string, count int, ciClassList []CmdbCIMetaM
 
 	if len(ci.Result.Children) > 0 {
 		for _, child := range ci.Result.Children {
-			ciClassList, count, _ = client.ReadCIs(fmt.Sprintf("%v", child), count, ciClassList)
+			if IsValidCi(fmt.Sprintf("%v", child)) {
+				ciClassList, count, _ = client.ReadCIs(fmt.Sprintf("%v", child), count, ciClassList)
+			}
 		}
 	} else {
 		return ciClassList, count, nil
@@ -190,6 +215,7 @@ func (client *Client) ReadCIs(Class string, count int, ciClassList []CmdbCIMetaM
 
 	return ciClassList, count, nil
 }
+
 func (client *Client) WriteProviderToFile(ciList []CmdbCIMetaModel) error {
 
 	resourceTemplate, err := ioutil.ReadFile("templates/provider.tmpl")

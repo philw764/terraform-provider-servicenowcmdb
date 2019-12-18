@@ -107,7 +107,6 @@ Schema: map[string]*schema.Schema{
                 "{{.Element}}" : {
                 Type:     schema.TypeMap,
                 Optional: true,
-                {{- if }}
                 Elem: &schema.Resource{
                 Schema: map[string]*schema.Schema{
                 "display_value": {
@@ -116,7 +115,7 @@ Schema: map[string]*schema.Schema{
                 },
                 "value": {
                 Type:     schema.TypeString,
-                Computed: true,
+                Optional: true,
                 },
                 "link": {
                 Type:     schema.TypeString,
@@ -128,7 +127,9 @@ Schema: map[string]*schema.Schema{
             {{- else}}
                 "{{.Element}}" : {
                 Type:     schema.TypeString,
-                Optional: true,
+                {{- if ne .AttrFlags ""}}
+                    {{.AttrFlags}},
+                {{- end}}
                 },
             {{- end}}
         {{- end}}

@@ -22,6 +22,7 @@ type CmdbCIMetaModel struct {
 			IsMandatory        string `json:"is_mandatory"`
 			IsReadOnly         string `json:"is_read_only"`
 			DefaultValue       string `json:"default_value"`
+			AttrFlags          string
 			Label              string `json:"label"`
 			AttributeCamelCase string
 			Type               string `json:"type"`
