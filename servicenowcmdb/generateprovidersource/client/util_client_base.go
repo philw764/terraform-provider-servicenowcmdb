@@ -145,8 +145,8 @@ func (client *Client) WriteCIStructToFile(ci CmdbCIMetaModel) error {
 	return nil
 }
 
-func IsValidCi (ci string) bool {
-	if strings.Contains(ci, "cmdb_ci_endpoing") {
+func IsValidCi(ci string) bool {
+	if strings.Contains(ci, "cmdb_ci_endpoint") {
 		return false
 	}
 	if strings.Contains(ci, "cmdb_ci") {
@@ -155,6 +155,7 @@ func IsValidCi (ci string) bool {
 	return false
 
 }
+
 // This function connects to ServiceNow using the MetaData API to pull the details for every CI in
 // the CMDB.
 func (client *Client) ReadCIs(Class string, count int, ciClassList []CmdbCIMetaModel) ([]CmdbCIMetaModel, int, error) {
@@ -185,16 +186,14 @@ func (client *Client) ReadCIs(Class string, count int, ciClassList []CmdbCIMetaM
 	ci.CiLabel = strings.ReplaceAll(ci.CiLabel, "-", "")
 	ci.CiLabel = strings.ReplaceAll(ci.CiLabel, "/", "")
 	ci.CiLabel = strings.ReplaceAll(ci.CiLabel, ".", "Dot")
-	ci.CiName  = strings.ReplaceAll(ci.CiName, "-", "")
+	ci.CiName = strings.ReplaceAll(ci.CiName, "-", "")
 	ci.CiName = strings.ReplaceAll(ci.CiName, "-", "")
 	ci.CiLabel = strings.ReplaceAll(ci.CiName, ".", "Dot")
-
 
 	ci.CiLabelCamelCase = CamelCaseString(ci.CiLabel)
 	ci.CiNameCamelCase = CamelCaseString(ci.CiName)
 
 	ciClassList = append(ciClassList, ci)
-
 
 	fmt.Println("The current CI being looked at:" + Class + "\tCount is:" + strconv.Itoa(count))
 
