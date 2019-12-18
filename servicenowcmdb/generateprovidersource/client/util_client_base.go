@@ -164,8 +164,8 @@ func (client *Client) ReadCIs(Class string, count int, ciClassList []CmdbCIMetaM
 	// the recursion.
 
 	//TODO: hard code only getting 10 classes during dev and test
-	//if Class == "" || count == 50 {
-	if Class == "" {
+	if Class == "" || count == 50 {
+		//if Class == "" {
 		return ciClassList, count, nil
 	}
 
