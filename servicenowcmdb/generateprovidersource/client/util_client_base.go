@@ -18,7 +18,7 @@ const BaseUrl = "https://dev75324.service-now.com/"
 const Api = "api/now/cmdb/meta/"
 const BaseClass = "cmdb_ci"
 const Userid = "admin"
-const Password = "XXXXXX"
+const Password = "T1v0l1uu"
 const Version = "0.01"
 const BuildNumber = "1.00"
 
