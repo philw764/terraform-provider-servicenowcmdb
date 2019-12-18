@@ -76,7 +76,7 @@ var flagAttrMap = FlagMap{
 	{"ALL", "Asset"}:               "Optional:true",
 	{"ALL", "Category"}:            "Computed:true",
 	{"ALL", "LeaseId"}:             "Optional:true",
-	{"ALL", "CdRom"}:             "Optional:true,Default:false",
+	{"ALL", "CdRom"}:               "Optional:true,Default:false",
 	{"ALL", "ALL"}:                 "Optional:true",
 }
 
