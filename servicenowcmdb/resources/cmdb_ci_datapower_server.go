@@ -9,7 +9,7 @@ package resources
 // Generator Version   : 1.00
 //
 //  Description       :   This file is the resource provider for the cmdb_ci_datapower_server CMDB Class.  This code is executed
-//                        when the servicenowcmdb_cmdb_ci_datapower_server keyword is used in a terraform script (*.tf) file
+//                        when the servicenowcmdb_data_power_hosting_server keyword is used in a terraform script (*.tf) file
 //
 //                        This file is will need to be regenerated if the ServiceNow CMDB base CI Class
 //                        "cmdb_ci" or of the cmdb_ci_datapower_server CI Class is modified.
@@ -25,12 +25,12 @@ const CiNamecmdb_ci_datapower_server = "cmdb_ci_datapower_server"
 
 // This is the structure to construct the JSON payload when POSTing to ServiceNow.  This is needed because
 // ServiceNow has strict parsing on the JSON Data and will fail if the JSON format doesn't match exactly.
-// This is essentially the same as CmdbCiDatapowerServerGet but does not contain the "value", "link" and
+// This is essentially the same as DataPowerHostingServerGet but does not contain the "value", "link" and
 // "display_value" fields for reference objects.
 //
 // The generateprovidersource utility constructs this STRUCT from metadata pulled from ServiceNow.
 //
-type CmdbCiDatapowerServerPost struct {
+type DataPowerHostingServerPost struct {
 	Result struct {
 		Attributes struct {
 			OsAddressWidth      string `json:"os_address_width,omitempty"`
@@ -138,7 +138,7 @@ type CmdbCiDatapowerServerPost struct {
 //
 // The generateprovidersource utility constructs this STRUCT from metadata pulled from ServiceNow.
 //
-type CmdbCiDatapowerServerGet struct {
+type DataPowerHostingServerGet struct {
 	Result struct {
 		Attributes struct {
 			OsAddressWidth    string `json:"os_address_width,omitempty"`
@@ -337,12 +337,12 @@ type CmdbCiDatapowerServerGet struct {
 //       requirements for managing attributes and provides a method for setting these switches for
 //       custom attributes.
 
-func ResourceCmdbCiDatapowerServer() *schema.Resource {
+func ResourceDataPowerHostingServer() *schema.Resource {
 	return &schema.Resource{
-		Create: createResourceCmdbCiDatapowerServer,
-		Read:   readResourceCmdbCiDatapowerServer,
-		Update: updateResourceCmdbCiDatapowerServer,
-		Delete: deleteResourceCmdbCiDatapowerServer,
+		Create: createResourceDataPowerHostingServer,
+		Read:   readResourceDataPowerHostingServer,
+		Update: updateResourceDataPowerHostingServer,
+		Delete: deleteResourceDataPowerHostingServer,
 
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
@@ -1059,12 +1059,12 @@ func ResourceCmdbCiDatapowerServer() *schema.Resource {
 
 //  Create routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
 //
-func createResourceCmdbCiDatapowerServer(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
+func createResourceDataPowerHostingServer(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
 
 	servicenowClient := serviceNowClient.(*Client) //Client Connection details
 	// Use common function to update base attributes
-	var ci CmdbCiDatapowerServerPost
-	if err := copyFromTerraformToServiceNowCmdbCiDatapowerServer(resourceData, &ci); err != nil {
+	var ci DataPowerHostingServerPost
+	if err := copyFromTerraformToServiceNowDataPowerHostingServer(resourceData, &ci); err != nil {
 		return err
 	}
 
@@ -1082,12 +1082,12 @@ func createResourceCmdbCiDatapowerServer(resourceData *schema.ResourceData, serv
 	}
 
 	resourceData.SetId(GetSysId(jsonData))
-	return readResourceCmdbCiDatapowerServer(resourceData, serviceNowClient)
+	return readResourceDataPowerHostingServer(resourceData, serviceNowClient)
 }
 
 //  Read routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
 //
-func readResourceCmdbCiDatapowerServer(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
+func readResourceDataPowerHostingServer(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
 
 	servicenowClient := serviceNowClient.(*Client)
 	SnowUrl := CMDBInstanceApi + CiNamecmdb_ci_datapower_server + "/" + resourceData.Id()
@@ -1098,7 +1098,7 @@ func readResourceCmdbCiDatapowerServer(resourceData *schema.ResourceData, servic
 		return err
 	}
 
-	if err := copyFromServiceNowToTerraformCmdbCiDatapowerServer(resourceData, jsonData); err != nil {
+	if err := copyFromServiceNowToTerraformDataPowerHostingServer(resourceData, jsonData); err != nil {
 		return err
 	}
 
@@ -1107,11 +1107,11 @@ func readResourceCmdbCiDatapowerServer(resourceData *schema.ResourceData, servic
 
 //  Update routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
 //
-func updateResourceCmdbCiDatapowerServer(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
+func updateResourceDataPowerHostingServer(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
 	servicenowClient := serviceNowClient.(*Client)
 
-	var ci CmdbCiDatapowerServerPost
-	if err := copyFromTerraformToServiceNowCmdbCiDatapowerServer(resourceData, &ci); err != nil {
+	var ci DataPowerHostingServerPost
+	if err := copyFromTerraformToServiceNowDataPowerHostingServer(resourceData, &ci); err != nil {
 		return err
 	}
 
@@ -1122,7 +1122,7 @@ func updateResourceCmdbCiDatapowerServer(resourceData *schema.ResourceData, serv
 		resourceData.SetId("")
 		return err
 	}
-	return readResourceCmdbCiDatapowerServer(resourceData, serviceNowClient)
+	return readResourceDataPowerHostingServer(resourceData, serviceNowClient)
 }
 
 // TODO:  Need to work out what to do with deleting CIs. ServiceNow does not support deleting CIs via the API
@@ -1132,16 +1132,16 @@ func updateResourceCmdbCiDatapowerServer(resourceData *schema.ResourceData, serv
 
 //  Delete routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
 //
-func deleteResourceCmdbCiDatapowerServer(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
+func deleteResourceDataPowerHostingServer(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
 
 	servicenowClient := serviceNowClient.(*Client)
-	var ci CmdbCiDatapowerServerPost
-	if err := copyFromTerraformToServiceNowCmdbCiDatapowerServer(resourceData, &ci); err != nil {
+	var ci DataPowerHostingServerPost
+	if err := copyFromTerraformToServiceNowDataPowerHostingServer(resourceData, &ci); err != nil {
 		return err
 	}
 
 	if err := resourceData.Set("install_status", "retired"); err != nil {
-		return fmt.Errorf("CmdbCiDatapowerServerfailed to set install_status field during destroy action %s", err)
+		return fmt.Errorf("DataPowerHostingServerfailed to set install_status field during destroy action %s", err)
 	}
 
 	SnowUrl := CMDBInstanceApi + CiNamecmdb_ci_datapower_server + "/" + resourceData.Id()
@@ -1158,7 +1158,7 @@ func deleteResourceCmdbCiDatapowerServer(resourceData *schema.ResourceData, serv
 // It would be nice if Terraform implemented a funciton to return a list of field names in a slice, this would
 // make it easier to loop through the structure instead of doing a "Get" per field.
 //
-func copyFromTerraformToServiceNowCmdbCiDatapowerServer(resourceData *schema.ResourceData, ci *CmdbCiDatapowerServerPost) error {
+func copyFromTerraformToServiceNowDataPowerHostingServer(resourceData *schema.ResourceData, ci *DataPowerHostingServerPost) error {
 
 	attrs := &ci.Result.Attributes
 	attrs.OsAddressWidth = resourceData.Get("os_address_width").(string)
@@ -1267,8 +1267,8 @@ func copyFromTerraformToServiceNowCmdbCiDatapowerServer(resourceData *schema.Res
 //        "display_value" are decoded correctly by Terraform.  The map is constructed for each reference field
 //        using a common function called "StructToMap" in the "client_base.go" file.
 //
-func copyFromServiceNowToTerraformCmdbCiDatapowerServer(resourceData *schema.ResourceData, jsonData []byte) error {
-	ci := CmdbCiDatapowerServerGet{}
+func copyFromServiceNowToTerraformDataPowerHostingServer(resourceData *schema.ResourceData, jsonData []byte) error {
+	ci := DataPowerHostingServerGet{}
 	if err := json.Unmarshal(jsonData, &ci); err != nil {
 		//resourceData.SetId("")
 		//return err

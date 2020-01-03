@@ -9,7 +9,7 @@ package resources
 // Generator Version   : 1.00
 //
 //  Description       :   This file is the resource provider for the cmdb_ci_lb_f5_gtm CMDB Class.  This code is executed
-//                        when the servicenowcmdb_cmdb_ci_lb_f5_gtm keyword is used in a terraform script (*.tf) file
+//                        when the servicenowcmdb_f5_bigip_gtm keyword is used in a terraform script (*.tf) file
 //
 //                        This file is will need to be regenerated if the ServiceNow CMDB base CI Class
 //                        "cmdb_ci" or of the cmdb_ci_lb_f5_gtm CI Class is modified.
@@ -25,12 +25,12 @@ const CiNamecmdb_ci_lb_f5_gtm = "cmdb_ci_lb_f5_gtm"
 
 // This is the structure to construct the JSON payload when POSTing to ServiceNow.  This is needed because
 // ServiceNow has strict parsing on the JSON Data and will fail if the JSON format doesn't match exactly.
-// This is essentially the same as CmdbCiLbF5GtmGet but does not contain the "value", "link" and
+// This is essentially the same as F5BigipGtmGet but does not contain the "value", "link" and
 // "display_value" fields for reference objects.
 //
 // The generateprovidersource utility constructs this STRUCT from metadata pulled from ServiceNow.
 //
-type CmdbCiLbF5GtmPost struct {
+type F5BigipGtmPost struct {
 	Result struct {
 		Attributes struct {
 			OsAddressWidth      string `json:"os_address_width,omitempty"`
@@ -139,7 +139,7 @@ type CmdbCiLbF5GtmPost struct {
 //
 // The generateprovidersource utility constructs this STRUCT from metadata pulled from ServiceNow.
 //
-type CmdbCiLbF5GtmGet struct {
+type F5BigipGtmGet struct {
 	Result struct {
 		Attributes struct {
 			OsAddressWidth    string `json:"os_address_width,omitempty"`
@@ -339,12 +339,12 @@ type CmdbCiLbF5GtmGet struct {
 //       requirements for managing attributes and provides a method for setting these switches for
 //       custom attributes.
 
-func ResourceCmdbCiLbF5Gtm() *schema.Resource {
+func ResourceF5BigipGtm() *schema.Resource {
 	return &schema.Resource{
-		Create: createResourceCmdbCiLbF5Gtm,
-		Read:   readResourceCmdbCiLbF5Gtm,
-		Update: updateResourceCmdbCiLbF5Gtm,
-		Delete: deleteResourceCmdbCiLbF5Gtm,
+		Create: createResourceF5BigipGtm,
+		Read:   readResourceF5BigipGtm,
+		Update: updateResourceF5BigipGtm,
+		Delete: deleteResourceF5BigipGtm,
 
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
@@ -1065,12 +1065,12 @@ func ResourceCmdbCiLbF5Gtm() *schema.Resource {
 
 //  Create routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
 //
-func createResourceCmdbCiLbF5Gtm(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
+func createResourceF5BigipGtm(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
 
 	servicenowClient := serviceNowClient.(*Client) //Client Connection details
 	// Use common function to update base attributes
-	var ci CmdbCiLbF5GtmPost
-	if err := copyFromTerraformToServiceNowCmdbCiLbF5Gtm(resourceData, &ci); err != nil {
+	var ci F5BigipGtmPost
+	if err := copyFromTerraformToServiceNowF5BigipGtm(resourceData, &ci); err != nil {
 		return err
 	}
 
@@ -1088,12 +1088,12 @@ func createResourceCmdbCiLbF5Gtm(resourceData *schema.ResourceData, serviceNowCl
 	}
 
 	resourceData.SetId(GetSysId(jsonData))
-	return readResourceCmdbCiLbF5Gtm(resourceData, serviceNowClient)
+	return readResourceF5BigipGtm(resourceData, serviceNowClient)
 }
 
 //  Read routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
 //
-func readResourceCmdbCiLbF5Gtm(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
+func readResourceF5BigipGtm(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
 
 	servicenowClient := serviceNowClient.(*Client)
 	SnowUrl := CMDBInstanceApi + CiNamecmdb_ci_lb_f5_gtm + "/" + resourceData.Id()
@@ -1104,7 +1104,7 @@ func readResourceCmdbCiLbF5Gtm(resourceData *schema.ResourceData, serviceNowClie
 		return err
 	}
 
-	if err := copyFromServiceNowToTerraformCmdbCiLbF5Gtm(resourceData, jsonData); err != nil {
+	if err := copyFromServiceNowToTerraformF5BigipGtm(resourceData, jsonData); err != nil {
 		return err
 	}
 
@@ -1113,11 +1113,11 @@ func readResourceCmdbCiLbF5Gtm(resourceData *schema.ResourceData, serviceNowClie
 
 //  Update routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
 //
-func updateResourceCmdbCiLbF5Gtm(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
+func updateResourceF5BigipGtm(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
 	servicenowClient := serviceNowClient.(*Client)
 
-	var ci CmdbCiLbF5GtmPost
-	if err := copyFromTerraformToServiceNowCmdbCiLbF5Gtm(resourceData, &ci); err != nil {
+	var ci F5BigipGtmPost
+	if err := copyFromTerraformToServiceNowF5BigipGtm(resourceData, &ci); err != nil {
 		return err
 	}
 
@@ -1128,7 +1128,7 @@ func updateResourceCmdbCiLbF5Gtm(resourceData *schema.ResourceData, serviceNowCl
 		resourceData.SetId("")
 		return err
 	}
-	return readResourceCmdbCiLbF5Gtm(resourceData, serviceNowClient)
+	return readResourceF5BigipGtm(resourceData, serviceNowClient)
 }
 
 // TODO:  Need to work out what to do with deleting CIs. ServiceNow does not support deleting CIs via the API
@@ -1138,16 +1138,16 @@ func updateResourceCmdbCiLbF5Gtm(resourceData *schema.ResourceData, serviceNowCl
 
 //  Delete routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
 //
-func deleteResourceCmdbCiLbF5Gtm(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
+func deleteResourceF5BigipGtm(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
 
 	servicenowClient := serviceNowClient.(*Client)
-	var ci CmdbCiLbF5GtmPost
-	if err := copyFromTerraformToServiceNowCmdbCiLbF5Gtm(resourceData, &ci); err != nil {
+	var ci F5BigipGtmPost
+	if err := copyFromTerraformToServiceNowF5BigipGtm(resourceData, &ci); err != nil {
 		return err
 	}
 
 	if err := resourceData.Set("install_status", "retired"); err != nil {
-		return fmt.Errorf("CmdbCiLbF5Gtmfailed to set install_status field during destroy action %s", err)
+		return fmt.Errorf("F5BigipGtmfailed to set install_status field during destroy action %s", err)
 	}
 
 	SnowUrl := CMDBInstanceApi + CiNamecmdb_ci_lb_f5_gtm + "/" + resourceData.Id()
@@ -1164,7 +1164,7 @@ func deleteResourceCmdbCiLbF5Gtm(resourceData *schema.ResourceData, serviceNowCl
 // It would be nice if Terraform implemented a funciton to return a list of field names in a slice, this would
 // make it easier to loop through the structure instead of doing a "Get" per field.
 //
-func copyFromTerraformToServiceNowCmdbCiLbF5Gtm(resourceData *schema.ResourceData, ci *CmdbCiLbF5GtmPost) error {
+func copyFromTerraformToServiceNowF5BigipGtm(resourceData *schema.ResourceData, ci *F5BigipGtmPost) error {
 
 	attrs := &ci.Result.Attributes
 	attrs.OsAddressWidth = resourceData.Get("os_address_width").(string)
@@ -1274,8 +1274,8 @@ func copyFromTerraformToServiceNowCmdbCiLbF5Gtm(resourceData *schema.ResourceDat
 //        "display_value" are decoded correctly by Terraform.  The map is constructed for each reference field
 //        using a common function called "StructToMap" in the "client_base.go" file.
 //
-func copyFromServiceNowToTerraformCmdbCiLbF5Gtm(resourceData *schema.ResourceData, jsonData []byte) error {
-	ci := CmdbCiLbF5GtmGet{}
+func copyFromServiceNowToTerraformF5BigipGtm(resourceData *schema.ResourceData, jsonData []byte) error {
+	ci := F5BigipGtmGet{}
 	if err := json.Unmarshal(jsonData, &ci); err != nil {
 		//resourceData.SetId("")
 		//return err

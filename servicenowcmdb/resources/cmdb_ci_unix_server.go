@@ -9,7 +9,7 @@ package resources
 // Generator Version   : 1.00
 //
 //  Description       :   This file is the resource provider for the cmdb_ci_unix_server CMDB Class.  This code is executed
-//                        when the servicenowcmdb_cmdb_ci_unix_server keyword is used in a terraform script (*.tf) file
+//                        when the servicenowcmdb_unix_server keyword is used in a terraform script (*.tf) file
 //
 //                        This file is will need to be regenerated if the ServiceNow CMDB base CI Class
 //                        "cmdb_ci" or of the cmdb_ci_unix_server CI Class is modified.
@@ -25,12 +25,12 @@ const CiNamecmdb_ci_unix_server = "cmdb_ci_unix_server"
 
 // This is the structure to construct the JSON payload when POSTing to ServiceNow.  This is needed because
 // ServiceNow has strict parsing on the JSON Data and will fail if the JSON format doesn't match exactly.
-// This is essentially the same as CmdbCiUnixServerGet but does not contain the "value", "link" and
+// This is essentially the same as UnixServerGet but does not contain the "value", "link" and
 // "display_value" fields for reference objects.
 //
 // The generateprovidersource utility constructs this STRUCT from metadata pulled from ServiceNow.
 //
-type CmdbCiUnixServerPost struct {
+type UnixServerPost struct {
 	Result struct {
 		Attributes struct {
 			OsAddressWidth      string `json:"os_address_width,omitempty"`
@@ -138,7 +138,7 @@ type CmdbCiUnixServerPost struct {
 //
 // The generateprovidersource utility constructs this STRUCT from metadata pulled from ServiceNow.
 //
-type CmdbCiUnixServerGet struct {
+type UnixServerGet struct {
 	Result struct {
 		Attributes struct {
 			OsAddressWidth    string `json:"os_address_width,omitempty"`
@@ -337,12 +337,12 @@ type CmdbCiUnixServerGet struct {
 //       requirements for managing attributes and provides a method for setting these switches for
 //       custom attributes.
 
-func ResourceCmdbCiUnixServer() *schema.Resource {
+func ResourceUnixServer() *schema.Resource {
 	return &schema.Resource{
-		Create: createResourceCmdbCiUnixServer,
-		Read:   readResourceCmdbCiUnixServer,
-		Update: updateResourceCmdbCiUnixServer,
-		Delete: deleteResourceCmdbCiUnixServer,
+		Create: createResourceUnixServer,
+		Read:   readResourceUnixServer,
+		Update: updateResourceUnixServer,
+		Delete: deleteResourceUnixServer,
 
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
@@ -1059,12 +1059,12 @@ func ResourceCmdbCiUnixServer() *schema.Resource {
 
 //  Create routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
 //
-func createResourceCmdbCiUnixServer(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
+func createResourceUnixServer(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
 
 	servicenowClient := serviceNowClient.(*Client) //Client Connection details
 	// Use common function to update base attributes
-	var ci CmdbCiUnixServerPost
-	if err := copyFromTerraformToServiceNowCmdbCiUnixServer(resourceData, &ci); err != nil {
+	var ci UnixServerPost
+	if err := copyFromTerraformToServiceNowUnixServer(resourceData, &ci); err != nil {
 		return err
 	}
 
@@ -1082,12 +1082,12 @@ func createResourceCmdbCiUnixServer(resourceData *schema.ResourceData, serviceNo
 	}
 
 	resourceData.SetId(GetSysId(jsonData))
-	return readResourceCmdbCiUnixServer(resourceData, serviceNowClient)
+	return readResourceUnixServer(resourceData, serviceNowClient)
 }
 
 //  Read routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
 //
-func readResourceCmdbCiUnixServer(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
+func readResourceUnixServer(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
 
 	servicenowClient := serviceNowClient.(*Client)
 	SnowUrl := CMDBInstanceApi + CiNamecmdb_ci_unix_server + "/" + resourceData.Id()
@@ -1098,7 +1098,7 @@ func readResourceCmdbCiUnixServer(resourceData *schema.ResourceData, serviceNowC
 		return err
 	}
 
-	if err := copyFromServiceNowToTerraformCmdbCiUnixServer(resourceData, jsonData); err != nil {
+	if err := copyFromServiceNowToTerraformUnixServer(resourceData, jsonData); err != nil {
 		return err
 	}
 
@@ -1107,11 +1107,11 @@ func readResourceCmdbCiUnixServer(resourceData *schema.ResourceData, serviceNowC
 
 //  Update routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
 //
-func updateResourceCmdbCiUnixServer(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
+func updateResourceUnixServer(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
 	servicenowClient := serviceNowClient.(*Client)
 
-	var ci CmdbCiUnixServerPost
-	if err := copyFromTerraformToServiceNowCmdbCiUnixServer(resourceData, &ci); err != nil {
+	var ci UnixServerPost
+	if err := copyFromTerraformToServiceNowUnixServer(resourceData, &ci); err != nil {
 		return err
 	}
 
@@ -1122,7 +1122,7 @@ func updateResourceCmdbCiUnixServer(resourceData *schema.ResourceData, serviceNo
 		resourceData.SetId("")
 		return err
 	}
-	return readResourceCmdbCiUnixServer(resourceData, serviceNowClient)
+	return readResourceUnixServer(resourceData, serviceNowClient)
 }
 
 // TODO:  Need to work out what to do with deleting CIs. ServiceNow does not support deleting CIs via the API
@@ -1132,16 +1132,16 @@ func updateResourceCmdbCiUnixServer(resourceData *schema.ResourceData, serviceNo
 
 //  Delete routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
 //
-func deleteResourceCmdbCiUnixServer(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
+func deleteResourceUnixServer(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
 
 	servicenowClient := serviceNowClient.(*Client)
-	var ci CmdbCiUnixServerPost
-	if err := copyFromTerraformToServiceNowCmdbCiUnixServer(resourceData, &ci); err != nil {
+	var ci UnixServerPost
+	if err := copyFromTerraformToServiceNowUnixServer(resourceData, &ci); err != nil {
 		return err
 	}
 
 	if err := resourceData.Set("install_status", "retired"); err != nil {
-		return fmt.Errorf("CmdbCiUnixServerfailed to set install_status field during destroy action %s", err)
+		return fmt.Errorf("UnixServerfailed to set install_status field during destroy action %s", err)
 	}
 
 	SnowUrl := CMDBInstanceApi + CiNamecmdb_ci_unix_server + "/" + resourceData.Id()
@@ -1158,7 +1158,7 @@ func deleteResourceCmdbCiUnixServer(resourceData *schema.ResourceData, serviceNo
 // It would be nice if Terraform implemented a funciton to return a list of field names in a slice, this would
 // make it easier to loop through the structure instead of doing a "Get" per field.
 //
-func copyFromTerraformToServiceNowCmdbCiUnixServer(resourceData *schema.ResourceData, ci *CmdbCiUnixServerPost) error {
+func copyFromTerraformToServiceNowUnixServer(resourceData *schema.ResourceData, ci *UnixServerPost) error {
 
 	attrs := &ci.Result.Attributes
 	attrs.OsAddressWidth = resourceData.Get("os_address_width").(string)
@@ -1267,8 +1267,8 @@ func copyFromTerraformToServiceNowCmdbCiUnixServer(resourceData *schema.Resource
 //        "display_value" are decoded correctly by Terraform.  The map is constructed for each reference field
 //        using a common function called "StructToMap" in the "client_base.go" file.
 //
-func copyFromServiceNowToTerraformCmdbCiUnixServer(resourceData *schema.ResourceData, jsonData []byte) error {
-	ci := CmdbCiUnixServerGet{}
+func copyFromServiceNowToTerraformUnixServer(resourceData *schema.ResourceData, jsonData []byte) error {
+	ci := UnixServerGet{}
 	if err := json.Unmarshal(jsonData, &ci); err != nil {
 		//resourceData.SetId("")
 		//return err

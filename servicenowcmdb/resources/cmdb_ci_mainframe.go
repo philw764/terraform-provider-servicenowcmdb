@@ -9,7 +9,7 @@ package resources
 // Generator Version   : 1.00
 //
 //  Description       :   This file is the resource provider for the cmdb_ci_mainframe CMDB Class.  This code is executed
-//                        when the servicenowcmdb_cmdb_ci_mainframe keyword is used in a terraform script (*.tf) file
+//                        when the servicenowcmdb_ibm_mainframe keyword is used in a terraform script (*.tf) file
 //
 //                        This file is will need to be regenerated if the ServiceNow CMDB base CI Class
 //                        "cmdb_ci" or of the cmdb_ci_mainframe CI Class is modified.
@@ -25,12 +25,12 @@ const CiNamecmdb_ci_mainframe = "cmdb_ci_mainframe"
 
 // This is the structure to construct the JSON payload when POSTing to ServiceNow.  This is needed because
 // ServiceNow has strict parsing on the JSON Data and will fail if the JSON format doesn't match exactly.
-// This is essentially the same as CmdbCiMainframeGet but does not contain the "value", "link" and
+// This is essentially the same as IbmMainframeGet but does not contain the "value", "link" and
 // "display_value" fields for reference objects.
 //
 // The generateprovidersource utility constructs this STRUCT from metadata pulled from ServiceNow.
 //
-type CmdbCiMainframePost struct {
+type IbmMainframePost struct {
 	Result struct {
 		Attributes struct {
 			OsAddressWidth      string `json:"os_address_width,omitempty"`
@@ -138,7 +138,7 @@ type CmdbCiMainframePost struct {
 //
 // The generateprovidersource utility constructs this STRUCT from metadata pulled from ServiceNow.
 //
-type CmdbCiMainframeGet struct {
+type IbmMainframeGet struct {
 	Result struct {
 		Attributes struct {
 			OsAddressWidth    string `json:"os_address_width,omitempty"`
@@ -337,12 +337,12 @@ type CmdbCiMainframeGet struct {
 //       requirements for managing attributes and provides a method for setting these switches for
 //       custom attributes.
 
-func ResourceCmdbCiMainframe() *schema.Resource {
+func ResourceIbmMainframe() *schema.Resource {
 	return &schema.Resource{
-		Create: createResourceCmdbCiMainframe,
-		Read:   readResourceCmdbCiMainframe,
-		Update: updateResourceCmdbCiMainframe,
-		Delete: deleteResourceCmdbCiMainframe,
+		Create: createResourceIbmMainframe,
+		Read:   readResourceIbmMainframe,
+		Update: updateResourceIbmMainframe,
+		Delete: deleteResourceIbmMainframe,
 
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
@@ -1059,12 +1059,12 @@ func ResourceCmdbCiMainframe() *schema.Resource {
 
 //  Create routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
 //
-func createResourceCmdbCiMainframe(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
+func createResourceIbmMainframe(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
 
 	servicenowClient := serviceNowClient.(*Client) //Client Connection details
 	// Use common function to update base attributes
-	var ci CmdbCiMainframePost
-	if err := copyFromTerraformToServiceNowCmdbCiMainframe(resourceData, &ci); err != nil {
+	var ci IbmMainframePost
+	if err := copyFromTerraformToServiceNowIbmMainframe(resourceData, &ci); err != nil {
 		return err
 	}
 
@@ -1082,12 +1082,12 @@ func createResourceCmdbCiMainframe(resourceData *schema.ResourceData, serviceNow
 	}
 
 	resourceData.SetId(GetSysId(jsonData))
-	return readResourceCmdbCiMainframe(resourceData, serviceNowClient)
+	return readResourceIbmMainframe(resourceData, serviceNowClient)
 }
 
 //  Read routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
 //
-func readResourceCmdbCiMainframe(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
+func readResourceIbmMainframe(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
 
 	servicenowClient := serviceNowClient.(*Client)
 	SnowUrl := CMDBInstanceApi + CiNamecmdb_ci_mainframe + "/" + resourceData.Id()
@@ -1098,7 +1098,7 @@ func readResourceCmdbCiMainframe(resourceData *schema.ResourceData, serviceNowCl
 		return err
 	}
 
-	if err := copyFromServiceNowToTerraformCmdbCiMainframe(resourceData, jsonData); err != nil {
+	if err := copyFromServiceNowToTerraformIbmMainframe(resourceData, jsonData); err != nil {
 		return err
 	}
 
@@ -1107,11 +1107,11 @@ func readResourceCmdbCiMainframe(resourceData *schema.ResourceData, serviceNowCl
 
 //  Update routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
 //
-func updateResourceCmdbCiMainframe(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
+func updateResourceIbmMainframe(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
 	servicenowClient := serviceNowClient.(*Client)
 
-	var ci CmdbCiMainframePost
-	if err := copyFromTerraformToServiceNowCmdbCiMainframe(resourceData, &ci); err != nil {
+	var ci IbmMainframePost
+	if err := copyFromTerraformToServiceNowIbmMainframe(resourceData, &ci); err != nil {
 		return err
 	}
 
@@ -1122,7 +1122,7 @@ func updateResourceCmdbCiMainframe(resourceData *schema.ResourceData, serviceNow
 		resourceData.SetId("")
 		return err
 	}
-	return readResourceCmdbCiMainframe(resourceData, serviceNowClient)
+	return readResourceIbmMainframe(resourceData, serviceNowClient)
 }
 
 // TODO:  Need to work out what to do with deleting CIs. ServiceNow does not support deleting CIs via the API
@@ -1132,16 +1132,16 @@ func updateResourceCmdbCiMainframe(resourceData *schema.ResourceData, serviceNow
 
 //  Delete routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
 //
-func deleteResourceCmdbCiMainframe(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
+func deleteResourceIbmMainframe(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
 
 	servicenowClient := serviceNowClient.(*Client)
-	var ci CmdbCiMainframePost
-	if err := copyFromTerraformToServiceNowCmdbCiMainframe(resourceData, &ci); err != nil {
+	var ci IbmMainframePost
+	if err := copyFromTerraformToServiceNowIbmMainframe(resourceData, &ci); err != nil {
 		return err
 	}
 
 	if err := resourceData.Set("install_status", "retired"); err != nil {
-		return fmt.Errorf("CmdbCiMainframefailed to set install_status field during destroy action %s", err)
+		return fmt.Errorf("IbmMainframefailed to set install_status field during destroy action %s", err)
 	}
 
 	SnowUrl := CMDBInstanceApi + CiNamecmdb_ci_mainframe + "/" + resourceData.Id()
@@ -1158,7 +1158,7 @@ func deleteResourceCmdbCiMainframe(resourceData *schema.ResourceData, serviceNow
 // It would be nice if Terraform implemented a funciton to return a list of field names in a slice, this would
 // make it easier to loop through the structure instead of doing a "Get" per field.
 //
-func copyFromTerraformToServiceNowCmdbCiMainframe(resourceData *schema.ResourceData, ci *CmdbCiMainframePost) error {
+func copyFromTerraformToServiceNowIbmMainframe(resourceData *schema.ResourceData, ci *IbmMainframePost) error {
 
 	attrs := &ci.Result.Attributes
 	attrs.OsAddressWidth = resourceData.Get("os_address_width").(string)
@@ -1267,8 +1267,8 @@ func copyFromTerraformToServiceNowCmdbCiMainframe(resourceData *schema.ResourceD
 //        "display_value" are decoded correctly by Terraform.  The map is constructed for each reference field
 //        using a common function called "StructToMap" in the "client_base.go" file.
 //
-func copyFromServiceNowToTerraformCmdbCiMainframe(resourceData *schema.ResourceData, jsonData []byte) error {
-	ci := CmdbCiMainframeGet{}
+func copyFromServiceNowToTerraformIbmMainframe(resourceData *schema.ResourceData, jsonData []byte) error {
+	ci := IbmMainframeGet{}
 	if err := json.Unmarshal(jsonData, &ci); err != nil {
 		//resourceData.SetId("")
 		//return err

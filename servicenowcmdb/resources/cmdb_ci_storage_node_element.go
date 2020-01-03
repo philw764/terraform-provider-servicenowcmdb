@@ -9,7 +9,7 @@ package resources
 // Generator Version   : 1.00
 //
 //  Description       :   This file is the resource provider for the cmdb_ci_storage_node_element CMDB Class.  This code is executed
-//                        when the servicenowcmdb_cmdb_ci_storage_node_element keyword is used in a terraform script (*.tf) file
+//                        when the servicenowcmdb_storage_node_element keyword is used in a terraform script (*.tf) file
 //
 //                        This file is will need to be regenerated if the ServiceNow CMDB base CI Class
 //                        "cmdb_ci" or of the cmdb_ci_storage_node_element CI Class is modified.
@@ -25,12 +25,12 @@ const CiNamecmdb_ci_storage_node_element = "cmdb_ci_storage_node_element"
 
 // This is the structure to construct the JSON payload when POSTing to ServiceNow.  This is needed because
 // ServiceNow has strict parsing on the JSON Data and will fail if the JSON format doesn't match exactly.
-// This is essentially the same as CmdbCiStorageNodeElementGet but does not contain the "value", "link" and
+// This is essentially the same as StorageNodeElementGet but does not contain the "value", "link" and
 // "display_value" fields for reference objects.
 //
 // The generateprovidersource utility constructs this STRUCT from metadata pulled from ServiceNow.
 //
-type CmdbCiStorageNodeElementPost struct {
+type StorageNodeElementPost struct {
 	Result struct {
 		Attributes struct {
 			OsAddressWidth      string `json:"os_address_width,omitempty"`
@@ -138,7 +138,7 @@ type CmdbCiStorageNodeElementPost struct {
 //
 // The generateprovidersource utility constructs this STRUCT from metadata pulled from ServiceNow.
 //
-type CmdbCiStorageNodeElementGet struct {
+type StorageNodeElementGet struct {
 	Result struct {
 		Attributes struct {
 			OsAddressWidth    string `json:"os_address_width,omitempty"`
@@ -337,12 +337,12 @@ type CmdbCiStorageNodeElementGet struct {
 //       requirements for managing attributes and provides a method for setting these switches for
 //       custom attributes.
 
-func ResourceCmdbCiStorageNodeElement() *schema.Resource {
+func ResourceStorageNodeElement() *schema.Resource {
 	return &schema.Resource{
-		Create: createResourceCmdbCiStorageNodeElement,
-		Read:   readResourceCmdbCiStorageNodeElement,
-		Update: updateResourceCmdbCiStorageNodeElement,
-		Delete: deleteResourceCmdbCiStorageNodeElement,
+		Create: createResourceStorageNodeElement,
+		Read:   readResourceStorageNodeElement,
+		Update: updateResourceStorageNodeElement,
+		Delete: deleteResourceStorageNodeElement,
 
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
@@ -1059,12 +1059,12 @@ func ResourceCmdbCiStorageNodeElement() *schema.Resource {
 
 //  Create routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
 //
-func createResourceCmdbCiStorageNodeElement(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
+func createResourceStorageNodeElement(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
 
 	servicenowClient := serviceNowClient.(*Client) //Client Connection details
 	// Use common function to update base attributes
-	var ci CmdbCiStorageNodeElementPost
-	if err := copyFromTerraformToServiceNowCmdbCiStorageNodeElement(resourceData, &ci); err != nil {
+	var ci StorageNodeElementPost
+	if err := copyFromTerraformToServiceNowStorageNodeElement(resourceData, &ci); err != nil {
 		return err
 	}
 
@@ -1082,12 +1082,12 @@ func createResourceCmdbCiStorageNodeElement(resourceData *schema.ResourceData, s
 	}
 
 	resourceData.SetId(GetSysId(jsonData))
-	return readResourceCmdbCiStorageNodeElement(resourceData, serviceNowClient)
+	return readResourceStorageNodeElement(resourceData, serviceNowClient)
 }
 
 //  Read routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
 //
-func readResourceCmdbCiStorageNodeElement(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
+func readResourceStorageNodeElement(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
 
 	servicenowClient := serviceNowClient.(*Client)
 	SnowUrl := CMDBInstanceApi + CiNamecmdb_ci_storage_node_element + "/" + resourceData.Id()
@@ -1098,7 +1098,7 @@ func readResourceCmdbCiStorageNodeElement(resourceData *schema.ResourceData, ser
 		return err
 	}
 
-	if err := copyFromServiceNowToTerraformCmdbCiStorageNodeElement(resourceData, jsonData); err != nil {
+	if err := copyFromServiceNowToTerraformStorageNodeElement(resourceData, jsonData); err != nil {
 		return err
 	}
 
@@ -1107,11 +1107,11 @@ func readResourceCmdbCiStorageNodeElement(resourceData *schema.ResourceData, ser
 
 //  Update routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
 //
-func updateResourceCmdbCiStorageNodeElement(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
+func updateResourceStorageNodeElement(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
 	servicenowClient := serviceNowClient.(*Client)
 
-	var ci CmdbCiStorageNodeElementPost
-	if err := copyFromTerraformToServiceNowCmdbCiStorageNodeElement(resourceData, &ci); err != nil {
+	var ci StorageNodeElementPost
+	if err := copyFromTerraformToServiceNowStorageNodeElement(resourceData, &ci); err != nil {
 		return err
 	}
 
@@ -1122,7 +1122,7 @@ func updateResourceCmdbCiStorageNodeElement(resourceData *schema.ResourceData, s
 		resourceData.SetId("")
 		return err
 	}
-	return readResourceCmdbCiStorageNodeElement(resourceData, serviceNowClient)
+	return readResourceStorageNodeElement(resourceData, serviceNowClient)
 }
 
 // TODO:  Need to work out what to do with deleting CIs. ServiceNow does not support deleting CIs via the API
@@ -1132,16 +1132,16 @@ func updateResourceCmdbCiStorageNodeElement(resourceData *schema.ResourceData, s
 
 //  Delete routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
 //
-func deleteResourceCmdbCiStorageNodeElement(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
+func deleteResourceStorageNodeElement(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
 
 	servicenowClient := serviceNowClient.(*Client)
-	var ci CmdbCiStorageNodeElementPost
-	if err := copyFromTerraformToServiceNowCmdbCiStorageNodeElement(resourceData, &ci); err != nil {
+	var ci StorageNodeElementPost
+	if err := copyFromTerraformToServiceNowStorageNodeElement(resourceData, &ci); err != nil {
 		return err
 	}
 
 	if err := resourceData.Set("install_status", "retired"); err != nil {
-		return fmt.Errorf("CmdbCiStorageNodeElementfailed to set install_status field during destroy action %s", err)
+		return fmt.Errorf("StorageNodeElementfailed to set install_status field during destroy action %s", err)
 	}
 
 	SnowUrl := CMDBInstanceApi + CiNamecmdb_ci_storage_node_element + "/" + resourceData.Id()
@@ -1158,7 +1158,7 @@ func deleteResourceCmdbCiStorageNodeElement(resourceData *schema.ResourceData, s
 // It would be nice if Terraform implemented a funciton to return a list of field names in a slice, this would
 // make it easier to loop through the structure instead of doing a "Get" per field.
 //
-func copyFromTerraformToServiceNowCmdbCiStorageNodeElement(resourceData *schema.ResourceData, ci *CmdbCiStorageNodeElementPost) error {
+func copyFromTerraformToServiceNowStorageNodeElement(resourceData *schema.ResourceData, ci *StorageNodeElementPost) error {
 
 	attrs := &ci.Result.Attributes
 	attrs.OsAddressWidth = resourceData.Get("os_address_width").(string)
@@ -1267,8 +1267,8 @@ func copyFromTerraformToServiceNowCmdbCiStorageNodeElement(resourceData *schema.
 //        "display_value" are decoded correctly by Terraform.  The map is constructed for each reference field
 //        using a common function called "StructToMap" in the "client_base.go" file.
 //
-func copyFromServiceNowToTerraformCmdbCiStorageNodeElement(resourceData *schema.ResourceData, jsonData []byte) error {
-	ci := CmdbCiStorageNodeElementGet{}
+func copyFromServiceNowToTerraformStorageNodeElement(resourceData *schema.ResourceData, jsonData []byte) error {
+	ci := StorageNodeElementGet{}
 	if err := json.Unmarshal(jsonData, &ci); err != nil {
 		//resourceData.SetId("")
 		//return err

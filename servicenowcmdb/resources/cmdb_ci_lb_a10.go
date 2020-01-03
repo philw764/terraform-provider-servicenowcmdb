@@ -9,7 +9,7 @@ package resources
 // Generator Version   : 1.00
 //
 //  Description       :   This file is the resource provider for the cmdb_ci_lb_a10 CMDB Class.  This code is executed
-//                        when the servicenowcmdb_cmdb_ci_lb_a10 keyword is used in a terraform script (*.tf) file
+//                        when the servicenowcmdb_a10_load_balancer keyword is used in a terraform script (*.tf) file
 //
 //                        This file is will need to be regenerated if the ServiceNow CMDB base CI Class
 //                        "cmdb_ci" or of the cmdb_ci_lb_a10 CI Class is modified.
@@ -25,12 +25,12 @@ const CiNamecmdb_ci_lb_a10 = "cmdb_ci_lb_a10"
 
 // This is the structure to construct the JSON payload when POSTing to ServiceNow.  This is needed because
 // ServiceNow has strict parsing on the JSON Data and will fail if the JSON format doesn't match exactly.
-// This is essentially the same as CmdbCiLbA10Get but does not contain the "value", "link" and
+// This is essentially the same as A10LoadBalancerGet but does not contain the "value", "link" and
 // "display_value" fields for reference objects.
 //
 // The generateprovidersource utility constructs this STRUCT from metadata pulled from ServiceNow.
 //
-type CmdbCiLbA10Post struct {
+type A10LoadBalancerPost struct {
 	Result struct {
 		Attributes struct {
 			OsAddressWidth      string `json:"os_address_width,omitempty"`
@@ -138,7 +138,7 @@ type CmdbCiLbA10Post struct {
 //
 // The generateprovidersource utility constructs this STRUCT from metadata pulled from ServiceNow.
 //
-type CmdbCiLbA10Get struct {
+type A10LoadBalancerGet struct {
 	Result struct {
 		Attributes struct {
 			OsAddressWidth    string `json:"os_address_width,omitempty"`
@@ -337,12 +337,12 @@ type CmdbCiLbA10Get struct {
 //       requirements for managing attributes and provides a method for setting these switches for
 //       custom attributes.
 
-func ResourceCmdbCiLbA10() *schema.Resource {
+func ResourceA10LoadBalancer() *schema.Resource {
 	return &schema.Resource{
-		Create: createResourceCmdbCiLbA10,
-		Read:   readResourceCmdbCiLbA10,
-		Update: updateResourceCmdbCiLbA10,
-		Delete: deleteResourceCmdbCiLbA10,
+		Create: createResourceA10LoadBalancer,
+		Read:   readResourceA10LoadBalancer,
+		Update: updateResourceA10LoadBalancer,
+		Delete: deleteResourceA10LoadBalancer,
 
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
@@ -1059,12 +1059,12 @@ func ResourceCmdbCiLbA10() *schema.Resource {
 
 //  Create routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
 //
-func createResourceCmdbCiLbA10(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
+func createResourceA10LoadBalancer(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
 
 	servicenowClient := serviceNowClient.(*Client) //Client Connection details
 	// Use common function to update base attributes
-	var ci CmdbCiLbA10Post
-	if err := copyFromTerraformToServiceNowCmdbCiLbA10(resourceData, &ci); err != nil {
+	var ci A10LoadBalancerPost
+	if err := copyFromTerraformToServiceNowA10LoadBalancer(resourceData, &ci); err != nil {
 		return err
 	}
 
@@ -1082,12 +1082,12 @@ func createResourceCmdbCiLbA10(resourceData *schema.ResourceData, serviceNowClie
 	}
 
 	resourceData.SetId(GetSysId(jsonData))
-	return readResourceCmdbCiLbA10(resourceData, serviceNowClient)
+	return readResourceA10LoadBalancer(resourceData, serviceNowClient)
 }
 
 //  Read routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
 //
-func readResourceCmdbCiLbA10(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
+func readResourceA10LoadBalancer(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
 
 	servicenowClient := serviceNowClient.(*Client)
 	SnowUrl := CMDBInstanceApi + CiNamecmdb_ci_lb_a10 + "/" + resourceData.Id()
@@ -1098,7 +1098,7 @@ func readResourceCmdbCiLbA10(resourceData *schema.ResourceData, serviceNowClient
 		return err
 	}
 
-	if err := copyFromServiceNowToTerraformCmdbCiLbA10(resourceData, jsonData); err != nil {
+	if err := copyFromServiceNowToTerraformA10LoadBalancer(resourceData, jsonData); err != nil {
 		return err
 	}
 
@@ -1107,11 +1107,11 @@ func readResourceCmdbCiLbA10(resourceData *schema.ResourceData, serviceNowClient
 
 //  Update routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
 //
-func updateResourceCmdbCiLbA10(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
+func updateResourceA10LoadBalancer(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
 	servicenowClient := serviceNowClient.(*Client)
 
-	var ci CmdbCiLbA10Post
-	if err := copyFromTerraformToServiceNowCmdbCiLbA10(resourceData, &ci); err != nil {
+	var ci A10LoadBalancerPost
+	if err := copyFromTerraformToServiceNowA10LoadBalancer(resourceData, &ci); err != nil {
 		return err
 	}
 
@@ -1122,7 +1122,7 @@ func updateResourceCmdbCiLbA10(resourceData *schema.ResourceData, serviceNowClie
 		resourceData.SetId("")
 		return err
 	}
-	return readResourceCmdbCiLbA10(resourceData, serviceNowClient)
+	return readResourceA10LoadBalancer(resourceData, serviceNowClient)
 }
 
 // TODO:  Need to work out what to do with deleting CIs. ServiceNow does not support deleting CIs via the API
@@ -1132,16 +1132,16 @@ func updateResourceCmdbCiLbA10(resourceData *schema.ResourceData, serviceNowClie
 
 //  Delete routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
 //
-func deleteResourceCmdbCiLbA10(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
+func deleteResourceA10LoadBalancer(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
 
 	servicenowClient := serviceNowClient.(*Client)
-	var ci CmdbCiLbA10Post
-	if err := copyFromTerraformToServiceNowCmdbCiLbA10(resourceData, &ci); err != nil {
+	var ci A10LoadBalancerPost
+	if err := copyFromTerraformToServiceNowA10LoadBalancer(resourceData, &ci); err != nil {
 		return err
 	}
 
 	if err := resourceData.Set("install_status", "retired"); err != nil {
-		return fmt.Errorf("CmdbCiLbA10failed to set install_status field during destroy action %s", err)
+		return fmt.Errorf("A10LoadBalancerfailed to set install_status field during destroy action %s", err)
 	}
 
 	SnowUrl := CMDBInstanceApi + CiNamecmdb_ci_lb_a10 + "/" + resourceData.Id()
@@ -1158,7 +1158,7 @@ func deleteResourceCmdbCiLbA10(resourceData *schema.ResourceData, serviceNowClie
 // It would be nice if Terraform implemented a funciton to return a list of field names in a slice, this would
 // make it easier to loop through the structure instead of doing a "Get" per field.
 //
-func copyFromTerraformToServiceNowCmdbCiLbA10(resourceData *schema.ResourceData, ci *CmdbCiLbA10Post) error {
+func copyFromTerraformToServiceNowA10LoadBalancer(resourceData *schema.ResourceData, ci *A10LoadBalancerPost) error {
 
 	attrs := &ci.Result.Attributes
 	attrs.OsAddressWidth = resourceData.Get("os_address_width").(string)
@@ -1267,8 +1267,8 @@ func copyFromTerraformToServiceNowCmdbCiLbA10(resourceData *schema.ResourceData,
 //        "display_value" are decoded correctly by Terraform.  The map is constructed for each reference field
 //        using a common function called "StructToMap" in the "client_base.go" file.
 //
-func copyFromServiceNowToTerraformCmdbCiLbA10(resourceData *schema.ResourceData, jsonData []byte) error {
-	ci := CmdbCiLbA10Get{}
+func copyFromServiceNowToTerraformA10LoadBalancer(resourceData *schema.ResourceData, jsonData []byte) error {
+	ci := A10LoadBalancerGet{}
 	if err := json.Unmarshal(jsonData, &ci); err != nil {
 		//resourceData.SetId("")
 		//return err

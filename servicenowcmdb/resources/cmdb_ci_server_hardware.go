@@ -9,7 +9,7 @@ package resources
 // Generator Version   : 1.00
 //
 //  Description       :   This file is the resource provider for the cmdb_ci_server_hardware CMDB Class.  This code is executed
-//                        when the servicenowcmdb_cmdb_ci_server_hardware keyword is used in a terraform script (*.tf) file
+//                        when the servicenowcmdb_server_hardware keyword is used in a terraform script (*.tf) file
 //
 //                        This file is will need to be regenerated if the ServiceNow CMDB base CI Class
 //                        "cmdb_ci" or of the cmdb_ci_server_hardware CI Class is modified.
@@ -25,12 +25,12 @@ const CiNamecmdb_ci_server_hardware = "cmdb_ci_server_hardware"
 
 // This is the structure to construct the JSON payload when POSTing to ServiceNow.  This is needed because
 // ServiceNow has strict parsing on the JSON Data and will fail if the JSON format doesn't match exactly.
-// This is essentially the same as CmdbCiServerHardwareGet but does not contain the "value", "link" and
+// This is essentially the same as ServerHardwareGet but does not contain the "value", "link" and
 // "display_value" fields for reference objects.
 //
 // The generateprovidersource utility constructs this STRUCT from metadata pulled from ServiceNow.
 //
-type CmdbCiServerHardwarePost struct {
+type ServerHardwarePost struct {
 	Result struct {
 		Attributes struct {
 			OsAddressWidth      string `json:"os_address_width,omitempty"`
@@ -138,7 +138,7 @@ type CmdbCiServerHardwarePost struct {
 //
 // The generateprovidersource utility constructs this STRUCT from metadata pulled from ServiceNow.
 //
-type CmdbCiServerHardwareGet struct {
+type ServerHardwareGet struct {
 	Result struct {
 		Attributes struct {
 			OsAddressWidth    string `json:"os_address_width,omitempty"`
@@ -337,12 +337,12 @@ type CmdbCiServerHardwareGet struct {
 //       requirements for managing attributes and provides a method for setting these switches for
 //       custom attributes.
 
-func ResourceCmdbCiServerHardware() *schema.Resource {
+func ResourceServerHardware() *schema.Resource {
 	return &schema.Resource{
-		Create: createResourceCmdbCiServerHardware,
-		Read:   readResourceCmdbCiServerHardware,
-		Update: updateResourceCmdbCiServerHardware,
-		Delete: deleteResourceCmdbCiServerHardware,
+		Create: createResourceServerHardware,
+		Read:   readResourceServerHardware,
+		Update: updateResourceServerHardware,
+		Delete: deleteResourceServerHardware,
 
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
@@ -1059,12 +1059,12 @@ func ResourceCmdbCiServerHardware() *schema.Resource {
 
 //  Create routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
 //
-func createResourceCmdbCiServerHardware(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
+func createResourceServerHardware(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
 
 	servicenowClient := serviceNowClient.(*Client) //Client Connection details
 	// Use common function to update base attributes
-	var ci CmdbCiServerHardwarePost
-	if err := copyFromTerraformToServiceNowCmdbCiServerHardware(resourceData, &ci); err != nil {
+	var ci ServerHardwarePost
+	if err := copyFromTerraformToServiceNowServerHardware(resourceData, &ci); err != nil {
 		return err
 	}
 
@@ -1082,12 +1082,12 @@ func createResourceCmdbCiServerHardware(resourceData *schema.ResourceData, servi
 	}
 
 	resourceData.SetId(GetSysId(jsonData))
-	return readResourceCmdbCiServerHardware(resourceData, serviceNowClient)
+	return readResourceServerHardware(resourceData, serviceNowClient)
 }
 
 //  Read routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
 //
-func readResourceCmdbCiServerHardware(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
+func readResourceServerHardware(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
 
 	servicenowClient := serviceNowClient.(*Client)
 	SnowUrl := CMDBInstanceApi + CiNamecmdb_ci_server_hardware + "/" + resourceData.Id()
@@ -1098,7 +1098,7 @@ func readResourceCmdbCiServerHardware(resourceData *schema.ResourceData, service
 		return err
 	}
 
-	if err := copyFromServiceNowToTerraformCmdbCiServerHardware(resourceData, jsonData); err != nil {
+	if err := copyFromServiceNowToTerraformServerHardware(resourceData, jsonData); err != nil {
 		return err
 	}
 
@@ -1107,11 +1107,11 @@ func readResourceCmdbCiServerHardware(resourceData *schema.ResourceData, service
 
 //  Update routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
 //
-func updateResourceCmdbCiServerHardware(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
+func updateResourceServerHardware(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
 	servicenowClient := serviceNowClient.(*Client)
 
-	var ci CmdbCiServerHardwarePost
-	if err := copyFromTerraformToServiceNowCmdbCiServerHardware(resourceData, &ci); err != nil {
+	var ci ServerHardwarePost
+	if err := copyFromTerraformToServiceNowServerHardware(resourceData, &ci); err != nil {
 		return err
 	}
 
@@ -1122,7 +1122,7 @@ func updateResourceCmdbCiServerHardware(resourceData *schema.ResourceData, servi
 		resourceData.SetId("")
 		return err
 	}
-	return readResourceCmdbCiServerHardware(resourceData, serviceNowClient)
+	return readResourceServerHardware(resourceData, serviceNowClient)
 }
 
 // TODO:  Need to work out what to do with deleting CIs. ServiceNow does not support deleting CIs via the API
@@ -1132,16 +1132,16 @@ func updateResourceCmdbCiServerHardware(resourceData *schema.ResourceData, servi
 
 //  Delete routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
 //
-func deleteResourceCmdbCiServerHardware(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
+func deleteResourceServerHardware(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
 
 	servicenowClient := serviceNowClient.(*Client)
-	var ci CmdbCiServerHardwarePost
-	if err := copyFromTerraformToServiceNowCmdbCiServerHardware(resourceData, &ci); err != nil {
+	var ci ServerHardwarePost
+	if err := copyFromTerraformToServiceNowServerHardware(resourceData, &ci); err != nil {
 		return err
 	}
 
 	if err := resourceData.Set("install_status", "retired"); err != nil {
-		return fmt.Errorf("CmdbCiServerHardwarefailed to set install_status field during destroy action %s", err)
+		return fmt.Errorf("ServerHardwarefailed to set install_status field during destroy action %s", err)
 	}
 
 	SnowUrl := CMDBInstanceApi + CiNamecmdb_ci_server_hardware + "/" + resourceData.Id()
@@ -1158,7 +1158,7 @@ func deleteResourceCmdbCiServerHardware(resourceData *schema.ResourceData, servi
 // It would be nice if Terraform implemented a funciton to return a list of field names in a slice, this would
 // make it easier to loop through the structure instead of doing a "Get" per field.
 //
-func copyFromTerraformToServiceNowCmdbCiServerHardware(resourceData *schema.ResourceData, ci *CmdbCiServerHardwarePost) error {
+func copyFromTerraformToServiceNowServerHardware(resourceData *schema.ResourceData, ci *ServerHardwarePost) error {
 
 	attrs := &ci.Result.Attributes
 	attrs.OsAddressWidth = resourceData.Get("os_address_width").(string)
@@ -1267,8 +1267,8 @@ func copyFromTerraformToServiceNowCmdbCiServerHardware(resourceData *schema.Reso
 //        "display_value" are decoded correctly by Terraform.  The map is constructed for each reference field
 //        using a common function called "StructToMap" in the "client_base.go" file.
 //
-func copyFromServiceNowToTerraformCmdbCiServerHardware(resourceData *schema.ResourceData, jsonData []byte) error {
-	ci := CmdbCiServerHardwareGet{}
+func copyFromServiceNowToTerraformServerHardware(resourceData *schema.ResourceData, jsonData []byte) error {
+	ci := ServerHardwareGet{}
 	if err := json.Unmarshal(jsonData, &ci); err != nil {
 		//resourceData.SetId("")
 		//return err

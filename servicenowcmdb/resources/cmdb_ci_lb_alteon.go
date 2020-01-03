@@ -9,7 +9,7 @@ package resources
 // Generator Version   : 1.00
 //
 //  Description       :   This file is the resource provider for the cmdb_ci_lb_alteon CMDB Class.  This code is executed
-//                        when the servicenowcmdb_cmdb_ci_lb_alteon keyword is used in a terraform script (*.tf) file
+//                        when the servicenowcmdb_alteon keyword is used in a terraform script (*.tf) file
 //
 //                        This file is will need to be regenerated if the ServiceNow CMDB base CI Class
 //                        "cmdb_ci" or of the cmdb_ci_lb_alteon CI Class is modified.
@@ -25,12 +25,12 @@ const CiNamecmdb_ci_lb_alteon = "cmdb_ci_lb_alteon"
 
 // This is the structure to construct the JSON payload when POSTing to ServiceNow.  This is needed because
 // ServiceNow has strict parsing on the JSON Data and will fail if the JSON format doesn't match exactly.
-// This is essentially the same as CmdbCiLbAlteonGet but does not contain the "value", "link" and
+// This is essentially the same as AlteonGet but does not contain the "value", "link" and
 // "display_value" fields for reference objects.
 //
 // The generateprovidersource utility constructs this STRUCT from metadata pulled from ServiceNow.
 //
-type CmdbCiLbAlteonPost struct {
+type AlteonPost struct {
 	Result struct {
 		Attributes struct {
 			OsAddressWidth      string `json:"os_address_width,omitempty"`
@@ -138,7 +138,7 @@ type CmdbCiLbAlteonPost struct {
 //
 // The generateprovidersource utility constructs this STRUCT from metadata pulled from ServiceNow.
 //
-type CmdbCiLbAlteonGet struct {
+type AlteonGet struct {
 	Result struct {
 		Attributes struct {
 			OsAddressWidth    string `json:"os_address_width,omitempty"`
@@ -337,12 +337,12 @@ type CmdbCiLbAlteonGet struct {
 //       requirements for managing attributes and provides a method for setting these switches for
 //       custom attributes.
 
-func ResourceCmdbCiLbAlteon() *schema.Resource {
+func ResourceAlteon() *schema.Resource {
 	return &schema.Resource{
-		Create: createResourceCmdbCiLbAlteon,
-		Read:   readResourceCmdbCiLbAlteon,
-		Update: updateResourceCmdbCiLbAlteon,
-		Delete: deleteResourceCmdbCiLbAlteon,
+		Create: createResourceAlteon,
+		Read:   readResourceAlteon,
+		Update: updateResourceAlteon,
+		Delete: deleteResourceAlteon,
 
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
@@ -1059,12 +1059,12 @@ func ResourceCmdbCiLbAlteon() *schema.Resource {
 
 //  Create routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
 //
-func createResourceCmdbCiLbAlteon(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
+func createResourceAlteon(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
 
 	servicenowClient := serviceNowClient.(*Client) //Client Connection details
 	// Use common function to update base attributes
-	var ci CmdbCiLbAlteonPost
-	if err := copyFromTerraformToServiceNowCmdbCiLbAlteon(resourceData, &ci); err != nil {
+	var ci AlteonPost
+	if err := copyFromTerraformToServiceNowAlteon(resourceData, &ci); err != nil {
 		return err
 	}
 
@@ -1082,12 +1082,12 @@ func createResourceCmdbCiLbAlteon(resourceData *schema.ResourceData, serviceNowC
 	}
 
 	resourceData.SetId(GetSysId(jsonData))
-	return readResourceCmdbCiLbAlteon(resourceData, serviceNowClient)
+	return readResourceAlteon(resourceData, serviceNowClient)
 }
 
 //  Read routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
 //
-func readResourceCmdbCiLbAlteon(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
+func readResourceAlteon(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
 
 	servicenowClient := serviceNowClient.(*Client)
 	SnowUrl := CMDBInstanceApi + CiNamecmdb_ci_lb_alteon + "/" + resourceData.Id()
@@ -1098,7 +1098,7 @@ func readResourceCmdbCiLbAlteon(resourceData *schema.ResourceData, serviceNowCli
 		return err
 	}
 
-	if err := copyFromServiceNowToTerraformCmdbCiLbAlteon(resourceData, jsonData); err != nil {
+	if err := copyFromServiceNowToTerraformAlteon(resourceData, jsonData); err != nil {
 		return err
 	}
 
@@ -1107,11 +1107,11 @@ func readResourceCmdbCiLbAlteon(resourceData *schema.ResourceData, serviceNowCli
 
 //  Update routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
 //
-func updateResourceCmdbCiLbAlteon(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
+func updateResourceAlteon(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
 	servicenowClient := serviceNowClient.(*Client)
 
-	var ci CmdbCiLbAlteonPost
-	if err := copyFromTerraformToServiceNowCmdbCiLbAlteon(resourceData, &ci); err != nil {
+	var ci AlteonPost
+	if err := copyFromTerraformToServiceNowAlteon(resourceData, &ci); err != nil {
 		return err
 	}
 
@@ -1122,7 +1122,7 @@ func updateResourceCmdbCiLbAlteon(resourceData *schema.ResourceData, serviceNowC
 		resourceData.SetId("")
 		return err
 	}
-	return readResourceCmdbCiLbAlteon(resourceData, serviceNowClient)
+	return readResourceAlteon(resourceData, serviceNowClient)
 }
 
 // TODO:  Need to work out what to do with deleting CIs. ServiceNow does not support deleting CIs via the API
@@ -1132,16 +1132,16 @@ func updateResourceCmdbCiLbAlteon(resourceData *schema.ResourceData, serviceNowC
 
 //  Delete routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
 //
-func deleteResourceCmdbCiLbAlteon(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
+func deleteResourceAlteon(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
 
 	servicenowClient := serviceNowClient.(*Client)
-	var ci CmdbCiLbAlteonPost
-	if err := copyFromTerraformToServiceNowCmdbCiLbAlteon(resourceData, &ci); err != nil {
+	var ci AlteonPost
+	if err := copyFromTerraformToServiceNowAlteon(resourceData, &ci); err != nil {
 		return err
 	}
 
 	if err := resourceData.Set("install_status", "retired"); err != nil {
-		return fmt.Errorf("CmdbCiLbAlteonfailed to set install_status field during destroy action %s", err)
+		return fmt.Errorf("Alteonfailed to set install_status field during destroy action %s", err)
 	}
 
 	SnowUrl := CMDBInstanceApi + CiNamecmdb_ci_lb_alteon + "/" + resourceData.Id()
@@ -1158,7 +1158,7 @@ func deleteResourceCmdbCiLbAlteon(resourceData *schema.ResourceData, serviceNowC
 // It would be nice if Terraform implemented a funciton to return a list of field names in a slice, this would
 // make it easier to loop through the structure instead of doing a "Get" per field.
 //
-func copyFromTerraformToServiceNowCmdbCiLbAlteon(resourceData *schema.ResourceData, ci *CmdbCiLbAlteonPost) error {
+func copyFromTerraformToServiceNowAlteon(resourceData *schema.ResourceData, ci *AlteonPost) error {
 
 	attrs := &ci.Result.Attributes
 	attrs.OsAddressWidth = resourceData.Get("os_address_width").(string)
@@ -1267,8 +1267,8 @@ func copyFromTerraformToServiceNowCmdbCiLbAlteon(resourceData *schema.ResourceDa
 //        "display_value" are decoded correctly by Terraform.  The map is constructed for each reference field
 //        using a common function called "StructToMap" in the "client_base.go" file.
 //
-func copyFromServiceNowToTerraformCmdbCiLbAlteon(resourceData *schema.ResourceData, jsonData []byte) error {
-	ci := CmdbCiLbAlteonGet{}
+func copyFromServiceNowToTerraformAlteon(resourceData *schema.ResourceData, jsonData []byte) error {
+	ci := AlteonGet{}
 	if err := json.Unmarshal(jsonData, &ci); err != nil {
 		//resourceData.SetId("")
 		//return err

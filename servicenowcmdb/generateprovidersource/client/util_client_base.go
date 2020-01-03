@@ -10,6 +10,8 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"terraform-provider-servicenowcmdb/servicenowcmdb/cli"
+
 	//"terraform-provider-servicenowcmdb/servicenowcmdb/cli"
 	"terraform-provider-servicenowcmdb/servicenowcmdb/generateprovidersource/flags"
 	"text/template"
@@ -160,17 +162,18 @@ func IsValidCi(ci string) bool {
 
 // This function connects to ServiceNow using the MetaData API to pull the details for every CI in
 // the CMDB.
-func ReadCIs(Class string, count int, ciClassList []CmdbCIMetaModel, client *Client) ([]CmdbCIMetaModel, int, error) {
+func ReadCIs(Class string, count int, ciClassList []CmdbCIMetaModel, client *Client, options *cli.Options) ([]CmdbCIMetaModel, int, error) {
 
 	// This is a recursive function, this condition is the stop condition for
 	// the recursion.
 
-	//TODO: hard code only getting 10 classes during dev and test
+	//TODO: This is where I start tomorrow.  Now that I have the command line list of classes to retrieve I need to see
+	//		if the class retrieved is in the list to process.
 	if Class == "" || count == 50 {
 		//if Class == "" {
 		return ciClassList, count, nil
 	}
-
+	fmt.Printf("This is the options passed: %s", options)
 	//snowClient := NewClient(BaseUrl, Userid, Password)
 	//var snowClient *Client
 	//if env, err := cli.GetEnvVars(); err != nil {

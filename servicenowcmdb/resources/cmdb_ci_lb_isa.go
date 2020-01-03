@@ -9,7 +9,7 @@ package resources
 // Generator Version   : 1.00
 //
 //  Description       :   This file is the resource provider for the cmdb_ci_lb_isa CMDB Class.  This code is executed
-//                        when the servicenowcmdb_cmdb_ci_lb_isa keyword is used in a terraform script (*.tf) file
+//                        when the servicenowcmdb_isa_server keyword is used in a terraform script (*.tf) file
 //
 //                        This file is will need to be regenerated if the ServiceNow CMDB base CI Class
 //                        "cmdb_ci" or of the cmdb_ci_lb_isa CI Class is modified.
@@ -25,12 +25,12 @@ const CiNamecmdb_ci_lb_isa = "cmdb_ci_lb_isa"
 
 // This is the structure to construct the JSON payload when POSTing to ServiceNow.  This is needed because
 // ServiceNow has strict parsing on the JSON Data and will fail if the JSON format doesn't match exactly.
-// This is essentially the same as CmdbCiLbIsaGet but does not contain the "value", "link" and
+// This is essentially the same as IsaServerGet but does not contain the "value", "link" and
 // "display_value" fields for reference objects.
 //
 // The generateprovidersource utility constructs this STRUCT from metadata pulled from ServiceNow.
 //
-type CmdbCiLbIsaPost struct {
+type IsaServerPost struct {
 	Result struct {
 		Attributes struct {
 			OsAddressWidth      string `json:"os_address_width,omitempty"`
@@ -139,7 +139,7 @@ type CmdbCiLbIsaPost struct {
 //
 // The generateprovidersource utility constructs this STRUCT from metadata pulled from ServiceNow.
 //
-type CmdbCiLbIsaGet struct {
+type IsaServerGet struct {
 	Result struct {
 		Attributes struct {
 			OsAddressWidth    string `json:"os_address_width,omitempty"`
@@ -339,12 +339,12 @@ type CmdbCiLbIsaGet struct {
 //       requirements for managing attributes and provides a method for setting these switches for
 //       custom attributes.
 
-func ResourceCmdbCiLbIsa() *schema.Resource {
+func ResourceIsaServer() *schema.Resource {
 	return &schema.Resource{
-		Create: createResourceCmdbCiLbIsa,
-		Read:   readResourceCmdbCiLbIsa,
-		Update: updateResourceCmdbCiLbIsa,
-		Delete: deleteResourceCmdbCiLbIsa,
+		Create: createResourceIsaServer,
+		Read:   readResourceIsaServer,
+		Update: updateResourceIsaServer,
+		Delete: deleteResourceIsaServer,
 
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
@@ -1065,12 +1065,12 @@ func ResourceCmdbCiLbIsa() *schema.Resource {
 
 //  Create routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
 //
-func createResourceCmdbCiLbIsa(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
+func createResourceIsaServer(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
 
 	servicenowClient := serviceNowClient.(*Client) //Client Connection details
 	// Use common function to update base attributes
-	var ci CmdbCiLbIsaPost
-	if err := copyFromTerraformToServiceNowCmdbCiLbIsa(resourceData, &ci); err != nil {
+	var ci IsaServerPost
+	if err := copyFromTerraformToServiceNowIsaServer(resourceData, &ci); err != nil {
 		return err
 	}
 
@@ -1088,12 +1088,12 @@ func createResourceCmdbCiLbIsa(resourceData *schema.ResourceData, serviceNowClie
 	}
 
 	resourceData.SetId(GetSysId(jsonData))
-	return readResourceCmdbCiLbIsa(resourceData, serviceNowClient)
+	return readResourceIsaServer(resourceData, serviceNowClient)
 }
 
 //  Read routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
 //
-func readResourceCmdbCiLbIsa(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
+func readResourceIsaServer(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
 
 	servicenowClient := serviceNowClient.(*Client)
 	SnowUrl := CMDBInstanceApi + CiNamecmdb_ci_lb_isa + "/" + resourceData.Id()
@@ -1104,7 +1104,7 @@ func readResourceCmdbCiLbIsa(resourceData *schema.ResourceData, serviceNowClient
 		return err
 	}
 
-	if err := copyFromServiceNowToTerraformCmdbCiLbIsa(resourceData, jsonData); err != nil {
+	if err := copyFromServiceNowToTerraformIsaServer(resourceData, jsonData); err != nil {
 		return err
 	}
 
@@ -1113,11 +1113,11 @@ func readResourceCmdbCiLbIsa(resourceData *schema.ResourceData, serviceNowClient
 
 //  Update routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
 //
-func updateResourceCmdbCiLbIsa(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
+func updateResourceIsaServer(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
 	servicenowClient := serviceNowClient.(*Client)
 
-	var ci CmdbCiLbIsaPost
-	if err := copyFromTerraformToServiceNowCmdbCiLbIsa(resourceData, &ci); err != nil {
+	var ci IsaServerPost
+	if err := copyFromTerraformToServiceNowIsaServer(resourceData, &ci); err != nil {
 		return err
 	}
 
@@ -1128,7 +1128,7 @@ func updateResourceCmdbCiLbIsa(resourceData *schema.ResourceData, serviceNowClie
 		resourceData.SetId("")
 		return err
 	}
-	return readResourceCmdbCiLbIsa(resourceData, serviceNowClient)
+	return readResourceIsaServer(resourceData, serviceNowClient)
 }
 
 // TODO:  Need to work out what to do with deleting CIs. ServiceNow does not support deleting CIs via the API
@@ -1138,16 +1138,16 @@ func updateResourceCmdbCiLbIsa(resourceData *schema.ResourceData, serviceNowClie
 
 //  Delete routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
 //
-func deleteResourceCmdbCiLbIsa(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
+func deleteResourceIsaServer(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
 
 	servicenowClient := serviceNowClient.(*Client)
-	var ci CmdbCiLbIsaPost
-	if err := copyFromTerraformToServiceNowCmdbCiLbIsa(resourceData, &ci); err != nil {
+	var ci IsaServerPost
+	if err := copyFromTerraformToServiceNowIsaServer(resourceData, &ci); err != nil {
 		return err
 	}
 
 	if err := resourceData.Set("install_status", "retired"); err != nil {
-		return fmt.Errorf("CmdbCiLbIsafailed to set install_status field during destroy action %s", err)
+		return fmt.Errorf("IsaServerfailed to set install_status field during destroy action %s", err)
 	}
 
 	SnowUrl := CMDBInstanceApi + CiNamecmdb_ci_lb_isa + "/" + resourceData.Id()
@@ -1164,7 +1164,7 @@ func deleteResourceCmdbCiLbIsa(resourceData *schema.ResourceData, serviceNowClie
 // It would be nice if Terraform implemented a funciton to return a list of field names in a slice, this would
 // make it easier to loop through the structure instead of doing a "Get" per field.
 //
-func copyFromTerraformToServiceNowCmdbCiLbIsa(resourceData *schema.ResourceData, ci *CmdbCiLbIsaPost) error {
+func copyFromTerraformToServiceNowIsaServer(resourceData *schema.ResourceData, ci *IsaServerPost) error {
 
 	attrs := &ci.Result.Attributes
 	attrs.OsAddressWidth = resourceData.Get("os_address_width").(string)
@@ -1274,8 +1274,8 @@ func copyFromTerraformToServiceNowCmdbCiLbIsa(resourceData *schema.ResourceData,
 //        "display_value" are decoded correctly by Terraform.  The map is constructed for each reference field
 //        using a common function called "StructToMap" in the "client_base.go" file.
 //
-func copyFromServiceNowToTerraformCmdbCiLbIsa(resourceData *schema.ResourceData, jsonData []byte) error {
-	ci := CmdbCiLbIsaGet{}
+func copyFromServiceNowToTerraformIsaServer(resourceData *schema.ResourceData, jsonData []byte) error {
+	ci := IsaServerGet{}
 	if err := json.Unmarshal(jsonData, &ci); err != nil {
 		//resourceData.SetId("")
 		//return err

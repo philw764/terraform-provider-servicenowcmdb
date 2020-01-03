@@ -9,7 +9,7 @@ package resources
 // Generator Version   : 1.00
 //
 //  Description       :   This file is the resource provider for the cmdb_ci_lb_cisco_css CMDB Class.  This code is executed
-//                        when the servicenowcmdb_cmdb_ci_lb_cisco_css keyword is used in a terraform script (*.tf) file
+//                        when the servicenowcmdb_cisco_css keyword is used in a terraform script (*.tf) file
 //
 //                        This file is will need to be regenerated if the ServiceNow CMDB base CI Class
 //                        "cmdb_ci" or of the cmdb_ci_lb_cisco_css CI Class is modified.
@@ -25,12 +25,12 @@ const CiNamecmdb_ci_lb_cisco_css = "cmdb_ci_lb_cisco_css"
 
 // This is the structure to construct the JSON payload when POSTing to ServiceNow.  This is needed because
 // ServiceNow has strict parsing on the JSON Data and will fail if the JSON format doesn't match exactly.
-// This is essentially the same as CmdbCiLbCiscoCssGet but does not contain the "value", "link" and
+// This is essentially the same as CiscoCssGet but does not contain the "value", "link" and
 // "display_value" fields for reference objects.
 //
 // The generateprovidersource utility constructs this STRUCT from metadata pulled from ServiceNow.
 //
-type CmdbCiLbCiscoCssPost struct {
+type CiscoCssPost struct {
 	Result struct {
 		Attributes struct {
 			OsAddressWidth      string `json:"os_address_width,omitempty"`
@@ -138,7 +138,7 @@ type CmdbCiLbCiscoCssPost struct {
 //
 // The generateprovidersource utility constructs this STRUCT from metadata pulled from ServiceNow.
 //
-type CmdbCiLbCiscoCssGet struct {
+type CiscoCssGet struct {
 	Result struct {
 		Attributes struct {
 			OsAddressWidth    string `json:"os_address_width,omitempty"`
@@ -337,12 +337,12 @@ type CmdbCiLbCiscoCssGet struct {
 //       requirements for managing attributes and provides a method for setting these switches for
 //       custom attributes.
 
-func ResourceCmdbCiLbCiscoCss() *schema.Resource {
+func ResourceCiscoCss() *schema.Resource {
 	return &schema.Resource{
-		Create: createResourceCmdbCiLbCiscoCss,
-		Read:   readResourceCmdbCiLbCiscoCss,
-		Update: updateResourceCmdbCiLbCiscoCss,
-		Delete: deleteResourceCmdbCiLbCiscoCss,
+		Create: createResourceCiscoCss,
+		Read:   readResourceCiscoCss,
+		Update: updateResourceCiscoCss,
+		Delete: deleteResourceCiscoCss,
 
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
@@ -1059,12 +1059,12 @@ func ResourceCmdbCiLbCiscoCss() *schema.Resource {
 
 //  Create routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
 //
-func createResourceCmdbCiLbCiscoCss(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
+func createResourceCiscoCss(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
 
 	servicenowClient := serviceNowClient.(*Client) //Client Connection details
 	// Use common function to update base attributes
-	var ci CmdbCiLbCiscoCssPost
-	if err := copyFromTerraformToServiceNowCmdbCiLbCiscoCss(resourceData, &ci); err != nil {
+	var ci CiscoCssPost
+	if err := copyFromTerraformToServiceNowCiscoCss(resourceData, &ci); err != nil {
 		return err
 	}
 
@@ -1082,12 +1082,12 @@ func createResourceCmdbCiLbCiscoCss(resourceData *schema.ResourceData, serviceNo
 	}
 
 	resourceData.SetId(GetSysId(jsonData))
-	return readResourceCmdbCiLbCiscoCss(resourceData, serviceNowClient)
+	return readResourceCiscoCss(resourceData, serviceNowClient)
 }
 
 //  Read routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
 //
-func readResourceCmdbCiLbCiscoCss(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
+func readResourceCiscoCss(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
 
 	servicenowClient := serviceNowClient.(*Client)
 	SnowUrl := CMDBInstanceApi + CiNamecmdb_ci_lb_cisco_css + "/" + resourceData.Id()
@@ -1098,7 +1098,7 @@ func readResourceCmdbCiLbCiscoCss(resourceData *schema.ResourceData, serviceNowC
 		return err
 	}
 
-	if err := copyFromServiceNowToTerraformCmdbCiLbCiscoCss(resourceData, jsonData); err != nil {
+	if err := copyFromServiceNowToTerraformCiscoCss(resourceData, jsonData); err != nil {
 		return err
 	}
 
@@ -1107,11 +1107,11 @@ func readResourceCmdbCiLbCiscoCss(resourceData *schema.ResourceData, serviceNowC
 
 //  Update routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
 //
-func updateResourceCmdbCiLbCiscoCss(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
+func updateResourceCiscoCss(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
 	servicenowClient := serviceNowClient.(*Client)
 
-	var ci CmdbCiLbCiscoCssPost
-	if err := copyFromTerraformToServiceNowCmdbCiLbCiscoCss(resourceData, &ci); err != nil {
+	var ci CiscoCssPost
+	if err := copyFromTerraformToServiceNowCiscoCss(resourceData, &ci); err != nil {
 		return err
 	}
 
@@ -1122,7 +1122,7 @@ func updateResourceCmdbCiLbCiscoCss(resourceData *schema.ResourceData, serviceNo
 		resourceData.SetId("")
 		return err
 	}
-	return readResourceCmdbCiLbCiscoCss(resourceData, serviceNowClient)
+	return readResourceCiscoCss(resourceData, serviceNowClient)
 }
 
 // TODO:  Need to work out what to do with deleting CIs. ServiceNow does not support deleting CIs via the API
@@ -1132,16 +1132,16 @@ func updateResourceCmdbCiLbCiscoCss(resourceData *schema.ResourceData, serviceNo
 
 //  Delete routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
 //
-func deleteResourceCmdbCiLbCiscoCss(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
+func deleteResourceCiscoCss(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
 
 	servicenowClient := serviceNowClient.(*Client)
-	var ci CmdbCiLbCiscoCssPost
-	if err := copyFromTerraformToServiceNowCmdbCiLbCiscoCss(resourceData, &ci); err != nil {
+	var ci CiscoCssPost
+	if err := copyFromTerraformToServiceNowCiscoCss(resourceData, &ci); err != nil {
 		return err
 	}
 
 	if err := resourceData.Set("install_status", "retired"); err != nil {
-		return fmt.Errorf("CmdbCiLbCiscoCssfailed to set install_status field during destroy action %s", err)
+		return fmt.Errorf("CiscoCssfailed to set install_status field during destroy action %s", err)
 	}
 
 	SnowUrl := CMDBInstanceApi + CiNamecmdb_ci_lb_cisco_css + "/" + resourceData.Id()
@@ -1158,7 +1158,7 @@ func deleteResourceCmdbCiLbCiscoCss(resourceData *schema.ResourceData, serviceNo
 // It would be nice if Terraform implemented a funciton to return a list of field names in a slice, this would
 // make it easier to loop through the structure instead of doing a "Get" per field.
 //
-func copyFromTerraformToServiceNowCmdbCiLbCiscoCss(resourceData *schema.ResourceData, ci *CmdbCiLbCiscoCssPost) error {
+func copyFromTerraformToServiceNowCiscoCss(resourceData *schema.ResourceData, ci *CiscoCssPost) error {
 
 	attrs := &ci.Result.Attributes
 	attrs.OsAddressWidth = resourceData.Get("os_address_width").(string)
@@ -1267,8 +1267,8 @@ func copyFromTerraformToServiceNowCmdbCiLbCiscoCss(resourceData *schema.Resource
 //        "display_value" are decoded correctly by Terraform.  The map is constructed for each reference field
 //        using a common function called "StructToMap" in the "client_base.go" file.
 //
-func copyFromServiceNowToTerraformCmdbCiLbCiscoCss(resourceData *schema.ResourceData, jsonData []byte) error {
-	ci := CmdbCiLbCiscoCssGet{}
+func copyFromServiceNowToTerraformCiscoCss(resourceData *schema.ResourceData, jsonData []byte) error {
+	ci := CiscoCssGet{}
 	if err := json.Unmarshal(jsonData, &ci); err != nil {
 		//resourceData.SetId("")
 		//return err

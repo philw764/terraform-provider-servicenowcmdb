@@ -9,7 +9,7 @@ package resources
 // Generator Version   : 1.00
 //
 //  Description       :   This file is the resource provider for the cmdb_ci_lb_netscaler CMDB Class.  This code is executed
-//                        when the servicenowcmdb_cmdb_ci_lb_netscaler keyword is used in a terraform script (*.tf) file
+//                        when the servicenowcmdb_citrix_netscaler keyword is used in a terraform script (*.tf) file
 //
 //                        This file is will need to be regenerated if the ServiceNow CMDB base CI Class
 //                        "cmdb_ci" or of the cmdb_ci_lb_netscaler CI Class is modified.
@@ -25,12 +25,12 @@ const CiNamecmdb_ci_lb_netscaler = "cmdb_ci_lb_netscaler"
 
 // This is the structure to construct the JSON payload when POSTing to ServiceNow.  This is needed because
 // ServiceNow has strict parsing on the JSON Data and will fail if the JSON format doesn't match exactly.
-// This is essentially the same as CmdbCiLbNetscalerGet but does not contain the "value", "link" and
+// This is essentially the same as CitrixNetscalerGet but does not contain the "value", "link" and
 // "display_value" fields for reference objects.
 //
 // The generateprovidersource utility constructs this STRUCT from metadata pulled from ServiceNow.
 //
-type CmdbCiLbNetscalerPost struct {
+type CitrixNetscalerPost struct {
 	Result struct {
 		Attributes struct {
 			OsAddressWidth      string `json:"os_address_width,omitempty"`
@@ -138,7 +138,7 @@ type CmdbCiLbNetscalerPost struct {
 //
 // The generateprovidersource utility constructs this STRUCT from metadata pulled from ServiceNow.
 //
-type CmdbCiLbNetscalerGet struct {
+type CitrixNetscalerGet struct {
 	Result struct {
 		Attributes struct {
 			OsAddressWidth    string `json:"os_address_width,omitempty"`
@@ -337,12 +337,12 @@ type CmdbCiLbNetscalerGet struct {
 //       requirements for managing attributes and provides a method for setting these switches for
 //       custom attributes.
 
-func ResourceCmdbCiLbNetscaler() *schema.Resource {
+func ResourceCitrixNetscaler() *schema.Resource {
 	return &schema.Resource{
-		Create: createResourceCmdbCiLbNetscaler,
-		Read:   readResourceCmdbCiLbNetscaler,
-		Update: updateResourceCmdbCiLbNetscaler,
-		Delete: deleteResourceCmdbCiLbNetscaler,
+		Create: createResourceCitrixNetscaler,
+		Read:   readResourceCitrixNetscaler,
+		Update: updateResourceCitrixNetscaler,
+		Delete: deleteResourceCitrixNetscaler,
 
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
@@ -1059,12 +1059,12 @@ func ResourceCmdbCiLbNetscaler() *schema.Resource {
 
 //  Create routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
 //
-func createResourceCmdbCiLbNetscaler(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
+func createResourceCitrixNetscaler(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
 
 	servicenowClient := serviceNowClient.(*Client) //Client Connection details
 	// Use common function to update base attributes
-	var ci CmdbCiLbNetscalerPost
-	if err := copyFromTerraformToServiceNowCmdbCiLbNetscaler(resourceData, &ci); err != nil {
+	var ci CitrixNetscalerPost
+	if err := copyFromTerraformToServiceNowCitrixNetscaler(resourceData, &ci); err != nil {
 		return err
 	}
 
@@ -1082,12 +1082,12 @@ func createResourceCmdbCiLbNetscaler(resourceData *schema.ResourceData, serviceN
 	}
 
 	resourceData.SetId(GetSysId(jsonData))
-	return readResourceCmdbCiLbNetscaler(resourceData, serviceNowClient)
+	return readResourceCitrixNetscaler(resourceData, serviceNowClient)
 }
 
 //  Read routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
 //
-func readResourceCmdbCiLbNetscaler(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
+func readResourceCitrixNetscaler(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
 
 	servicenowClient := serviceNowClient.(*Client)
 	SnowUrl := CMDBInstanceApi + CiNamecmdb_ci_lb_netscaler + "/" + resourceData.Id()
@@ -1098,7 +1098,7 @@ func readResourceCmdbCiLbNetscaler(resourceData *schema.ResourceData, serviceNow
 		return err
 	}
 
-	if err := copyFromServiceNowToTerraformCmdbCiLbNetscaler(resourceData, jsonData); err != nil {
+	if err := copyFromServiceNowToTerraformCitrixNetscaler(resourceData, jsonData); err != nil {
 		return err
 	}
 
@@ -1107,11 +1107,11 @@ func readResourceCmdbCiLbNetscaler(resourceData *schema.ResourceData, serviceNow
 
 //  Update routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
 //
-func updateResourceCmdbCiLbNetscaler(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
+func updateResourceCitrixNetscaler(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
 	servicenowClient := serviceNowClient.(*Client)
 
-	var ci CmdbCiLbNetscalerPost
-	if err := copyFromTerraformToServiceNowCmdbCiLbNetscaler(resourceData, &ci); err != nil {
+	var ci CitrixNetscalerPost
+	if err := copyFromTerraformToServiceNowCitrixNetscaler(resourceData, &ci); err != nil {
 		return err
 	}
 
@@ -1122,7 +1122,7 @@ func updateResourceCmdbCiLbNetscaler(resourceData *schema.ResourceData, serviceN
 		resourceData.SetId("")
 		return err
 	}
-	return readResourceCmdbCiLbNetscaler(resourceData, serviceNowClient)
+	return readResourceCitrixNetscaler(resourceData, serviceNowClient)
 }
 
 // TODO:  Need to work out what to do with deleting CIs. ServiceNow does not support deleting CIs via the API
@@ -1132,16 +1132,16 @@ func updateResourceCmdbCiLbNetscaler(resourceData *schema.ResourceData, serviceN
 
 //  Delete routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
 //
-func deleteResourceCmdbCiLbNetscaler(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
+func deleteResourceCitrixNetscaler(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
 
 	servicenowClient := serviceNowClient.(*Client)
-	var ci CmdbCiLbNetscalerPost
-	if err := copyFromTerraformToServiceNowCmdbCiLbNetscaler(resourceData, &ci); err != nil {
+	var ci CitrixNetscalerPost
+	if err := copyFromTerraformToServiceNowCitrixNetscaler(resourceData, &ci); err != nil {
 		return err
 	}
 
 	if err := resourceData.Set("install_status", "retired"); err != nil {
-		return fmt.Errorf("CmdbCiLbNetscalerfailed to set install_status field during destroy action %s", err)
+		return fmt.Errorf("CitrixNetscalerfailed to set install_status field during destroy action %s", err)
 	}
 
 	SnowUrl := CMDBInstanceApi + CiNamecmdb_ci_lb_netscaler + "/" + resourceData.Id()
@@ -1158,7 +1158,7 @@ func deleteResourceCmdbCiLbNetscaler(resourceData *schema.ResourceData, serviceN
 // It would be nice if Terraform implemented a funciton to return a list of field names in a slice, this would
 // make it easier to loop through the structure instead of doing a "Get" per field.
 //
-func copyFromTerraformToServiceNowCmdbCiLbNetscaler(resourceData *schema.ResourceData, ci *CmdbCiLbNetscalerPost) error {
+func copyFromTerraformToServiceNowCitrixNetscaler(resourceData *schema.ResourceData, ci *CitrixNetscalerPost) error {
 
 	attrs := &ci.Result.Attributes
 	attrs.OsAddressWidth = resourceData.Get("os_address_width").(string)
@@ -1267,8 +1267,8 @@ func copyFromTerraformToServiceNowCmdbCiLbNetscaler(resourceData *schema.Resourc
 //        "display_value" are decoded correctly by Terraform.  The map is constructed for each reference field
 //        using a common function called "StructToMap" in the "client_base.go" file.
 //
-func copyFromServiceNowToTerraformCmdbCiLbNetscaler(resourceData *schema.ResourceData, jsonData []byte) error {
-	ci := CmdbCiLbNetscalerGet{}
+func copyFromServiceNowToTerraformCitrixNetscaler(resourceData *schema.ResourceData, jsonData []byte) error {
+	ci := CitrixNetscalerGet{}
 	if err := json.Unmarshal(jsonData, &ci); err != nil {
 		//resourceData.SetId("")
 		//return err

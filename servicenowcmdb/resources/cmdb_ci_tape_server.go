@@ -9,7 +9,7 @@ package resources
 // Generator Version   : 1.00
 //
 //  Description       :   This file is the resource provider for the cmdb_ci_tape_server CMDB Class.  This code is executed
-//                        when the servicenowcmdb_cmdb_ci_tape_server keyword is used in a terraform script (*.tf) file
+//                        when the servicenowcmdb_server_tape_unit keyword is used in a terraform script (*.tf) file
 //
 //                        This file is will need to be regenerated if the ServiceNow CMDB base CI Class
 //                        "cmdb_ci" or of the cmdb_ci_tape_server CI Class is modified.
@@ -25,12 +25,12 @@ const CiNamecmdb_ci_tape_server = "cmdb_ci_tape_server"
 
 // This is the structure to construct the JSON payload when POSTing to ServiceNow.  This is needed because
 // ServiceNow has strict parsing on the JSON Data and will fail if the JSON format doesn't match exactly.
-// This is essentially the same as CmdbCiTapeServerGet but does not contain the "value", "link" and
+// This is essentially the same as ServerTapeUnitGet but does not contain the "value", "link" and
 // "display_value" fields for reference objects.
 //
 // The generateprovidersource utility constructs this STRUCT from metadata pulled from ServiceNow.
 //
-type CmdbCiTapeServerPost struct {
+type ServerTapeUnitPost struct {
 	Result struct {
 		Attributes struct {
 			OsAddressWidth      string `json:"os_address_width,omitempty"`
@@ -138,7 +138,7 @@ type CmdbCiTapeServerPost struct {
 //
 // The generateprovidersource utility constructs this STRUCT from metadata pulled from ServiceNow.
 //
-type CmdbCiTapeServerGet struct {
+type ServerTapeUnitGet struct {
 	Result struct {
 		Attributes struct {
 			OsAddressWidth    string `json:"os_address_width,omitempty"`
@@ -337,12 +337,12 @@ type CmdbCiTapeServerGet struct {
 //       requirements for managing attributes and provides a method for setting these switches for
 //       custom attributes.
 
-func ResourceCmdbCiTapeServer() *schema.Resource {
+func ResourceServerTapeUnit() *schema.Resource {
 	return &schema.Resource{
-		Create: createResourceCmdbCiTapeServer,
-		Read:   readResourceCmdbCiTapeServer,
-		Update: updateResourceCmdbCiTapeServer,
-		Delete: deleteResourceCmdbCiTapeServer,
+		Create: createResourceServerTapeUnit,
+		Read:   readResourceServerTapeUnit,
+		Update: updateResourceServerTapeUnit,
+		Delete: deleteResourceServerTapeUnit,
 
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
@@ -1059,12 +1059,12 @@ func ResourceCmdbCiTapeServer() *schema.Resource {
 
 //  Create routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
 //
-func createResourceCmdbCiTapeServer(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
+func createResourceServerTapeUnit(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
 
 	servicenowClient := serviceNowClient.(*Client) //Client Connection details
 	// Use common function to update base attributes
-	var ci CmdbCiTapeServerPost
-	if err := copyFromTerraformToServiceNowCmdbCiTapeServer(resourceData, &ci); err != nil {
+	var ci ServerTapeUnitPost
+	if err := copyFromTerraformToServiceNowServerTapeUnit(resourceData, &ci); err != nil {
 		return err
 	}
 
@@ -1082,12 +1082,12 @@ func createResourceCmdbCiTapeServer(resourceData *schema.ResourceData, serviceNo
 	}
 
 	resourceData.SetId(GetSysId(jsonData))
-	return readResourceCmdbCiTapeServer(resourceData, serviceNowClient)
+	return readResourceServerTapeUnit(resourceData, serviceNowClient)
 }
 
 //  Read routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
 //
-func readResourceCmdbCiTapeServer(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
+func readResourceServerTapeUnit(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
 
 	servicenowClient := serviceNowClient.(*Client)
 	SnowUrl := CMDBInstanceApi + CiNamecmdb_ci_tape_server + "/" + resourceData.Id()
@@ -1098,7 +1098,7 @@ func readResourceCmdbCiTapeServer(resourceData *schema.ResourceData, serviceNowC
 		return err
 	}
 
-	if err := copyFromServiceNowToTerraformCmdbCiTapeServer(resourceData, jsonData); err != nil {
+	if err := copyFromServiceNowToTerraformServerTapeUnit(resourceData, jsonData); err != nil {
 		return err
 	}
 
@@ -1107,11 +1107,11 @@ func readResourceCmdbCiTapeServer(resourceData *schema.ResourceData, serviceNowC
 
 //  Update routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
 //
-func updateResourceCmdbCiTapeServer(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
+func updateResourceServerTapeUnit(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
 	servicenowClient := serviceNowClient.(*Client)
 
-	var ci CmdbCiTapeServerPost
-	if err := copyFromTerraformToServiceNowCmdbCiTapeServer(resourceData, &ci); err != nil {
+	var ci ServerTapeUnitPost
+	if err := copyFromTerraformToServiceNowServerTapeUnit(resourceData, &ci); err != nil {
 		return err
 	}
 
@@ -1122,7 +1122,7 @@ func updateResourceCmdbCiTapeServer(resourceData *schema.ResourceData, serviceNo
 		resourceData.SetId("")
 		return err
 	}
-	return readResourceCmdbCiTapeServer(resourceData, serviceNowClient)
+	return readResourceServerTapeUnit(resourceData, serviceNowClient)
 }
 
 // TODO:  Need to work out what to do with deleting CIs. ServiceNow does not support deleting CIs via the API
@@ -1132,16 +1132,16 @@ func updateResourceCmdbCiTapeServer(resourceData *schema.ResourceData, serviceNo
 
 //  Delete routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
 //
-func deleteResourceCmdbCiTapeServer(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
+func deleteResourceServerTapeUnit(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
 
 	servicenowClient := serviceNowClient.(*Client)
-	var ci CmdbCiTapeServerPost
-	if err := copyFromTerraformToServiceNowCmdbCiTapeServer(resourceData, &ci); err != nil {
+	var ci ServerTapeUnitPost
+	if err := copyFromTerraformToServiceNowServerTapeUnit(resourceData, &ci); err != nil {
 		return err
 	}
 
 	if err := resourceData.Set("install_status", "retired"); err != nil {
-		return fmt.Errorf("CmdbCiTapeServerfailed to set install_status field during destroy action %s", err)
+		return fmt.Errorf("ServerTapeUnitfailed to set install_status field during destroy action %s", err)
 	}
 
 	SnowUrl := CMDBInstanceApi + CiNamecmdb_ci_tape_server + "/" + resourceData.Id()
@@ -1158,7 +1158,7 @@ func deleteResourceCmdbCiTapeServer(resourceData *schema.ResourceData, serviceNo
 // It would be nice if Terraform implemented a funciton to return a list of field names in a slice, this would
 // make it easier to loop through the structure instead of doing a "Get" per field.
 //
-func copyFromTerraformToServiceNowCmdbCiTapeServer(resourceData *schema.ResourceData, ci *CmdbCiTapeServerPost) error {
+func copyFromTerraformToServiceNowServerTapeUnit(resourceData *schema.ResourceData, ci *ServerTapeUnitPost) error {
 
 	attrs := &ci.Result.Attributes
 	attrs.OsAddressWidth = resourceData.Get("os_address_width").(string)
@@ -1267,8 +1267,8 @@ func copyFromTerraformToServiceNowCmdbCiTapeServer(resourceData *schema.Resource
 //        "display_value" are decoded correctly by Terraform.  The map is constructed for each reference field
 //        using a common function called "StructToMap" in the "client_base.go" file.
 //
-func copyFromServiceNowToTerraformCmdbCiTapeServer(resourceData *schema.ResourceData, jsonData []byte) error {
-	ci := CmdbCiTapeServerGet{}
+func copyFromServiceNowToTerraformServerTapeUnit(resourceData *schema.ResourceData, jsonData []byte) error {
+	ci := ServerTapeUnitGet{}
 	if err := json.Unmarshal(jsonData, &ci); err != nil {
 		//resourceData.SetId("")
 		//return err
