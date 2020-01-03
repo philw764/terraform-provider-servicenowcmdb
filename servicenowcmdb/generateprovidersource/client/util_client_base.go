@@ -223,7 +223,7 @@ func ReadCIs(Class string, count int, ciClassList []CmdbCIMetaModel, client *Cli
 	if len(ci.Result.Children) > 0 {
 		for _, child := range ci.Result.Children {
 			if IsValidCi(fmt.Sprintf("%v", child)) {
-				ciClassList, count, _ = ReadCIs(fmt.Sprintf("%v", child), count, ciClassList, client)
+				ciClassList, count, _ = ReadCIs(fmt.Sprintf("%v", child), count, ciClassList, client, options)
 			}
 		}
 	} else {
