@@ -33,7 +33,7 @@ func main() {
 	var CiList []client.CmdbCIMetaModel
 	//CiList, count, err := snowClient.ReadCIs(client.BaseClass, 0, CiList)
 
-	CiList, count, err := client.ReadCIs("cmdb_ci_server", 0, CiList, snowClient, options)
+	CiList, count, err := client.ReadCIs("cmdb_ci_server", 0, CiList, snowClient, &options)
 	if err != nil {
 		fmt.Println("Failed to get data. Is ServiceNow running?  If it is, check credentials as correct")
 	} else {
