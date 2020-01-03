@@ -10,15 +10,17 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	//"terraform-provider-servicenowcmdb/servicenowcmdb/cli"
 	"terraform-provider-servicenowcmdb/servicenowcmdb/generateprovidersource/flags"
 	"text/template"
 )
 
-const BaseUrl = "https://dev75324.service-now.com/"
+//const BaseUrl = "https://dev75324.service-now.com/"
 const Api = "api/now/cmdb/meta/"
 const BaseClass = "cmdb_ci"
-const Userid = "admin"
-const Password = "XXXXXX"
+
+//const Userid = "admin"
+//const Password = "XXXXXX"
 const Version = "0.01"
 const BuildNumber = "1.00"
 
@@ -43,16 +45,16 @@ func CamelCaseString(str string) string {
 }
 
 // ServiceNowClient defines possible methods to call on the ServiceNowClient.
-type ServiceNowClient interface {
-	GetCIMetaData(string, CmdbCIMetaModel) error
-	WriteCIStruct(model CmdbCIMetaModel) error
-	ReadCIs(string, int, []CmdbCIMetaModel) ([]CmdbCIMetaModel, int, error)
+//type ServiceNowClient interface {
+//GetCIMetaData(string, CmdbCIMetaModel) error
+//WriteCIStruct(model CmdbCIMetaModel) error
+//ReadCIs(string, int, []CmdbCIMetaModel) ([]CmdbCIMetaModel, int, error)
 
-	//func (client *Client) ReadCIs(Class string, count int, ciClassList []CmdbCIMetaModel)  ([]CmdbCIMetaModel,int, error) {
+//func (client *Client) ReadCIs(Class string, count int, ciClassList []CmdbCIMetaModel)  ([]CmdbCIMetaModel,int, error) {
 
-}
+//}
 
-// NewClient is a factory method used to return a new ServiceNowClient.
+// NewClient returns a new ServiceNowClient.
 func NewClient(baseURL string, username string, password string) *Client {
 	// Concatenate username + password to create a basic authorization header.
 	credentials := username + ":" + password
@@ -62,8 +64,8 @@ func NewClient(baseURL string, username string, password string) *Client {
 	}
 }
 
-func (client *Client) GetCIMetaData(endpoint string, responseObjectOut interface{}) error {
-	jsonResponse, err := client.requestJSON("GET", endpoint, nil)
+func GetCIMetaData(endpoint string, responseObjectOut interface{}, client *Client) error {
+	jsonResponse, err := requestJSON("GET", endpoint, nil, client)
 	if err != nil {
 		return err
 	}
@@ -79,7 +81,7 @@ func (client *Client) GetCIMetaData(endpoint string, responseObjectOut interface
 }
 
 // requestJSON execute an HTTP request and returns the raw response data.
-func (client *Client) requestJSON(method string, path string, jsonData interface{}) ([]byte, error) {
+func requestJSON(method string, path string, jsonData interface{}, client *Client) ([]byte, error) {
 	var data *bytes.Buffer
 
 	if jsonData != nil {
@@ -134,7 +136,7 @@ func (client *Client) WriteCIStructToFile(ci CmdbCIMetaModel) error {
 		panic(err)
 	}
 
-	file, err := os.OpenFile("../resources/"+ci.Result.Name+".go", os.O_TRUNC|os.O_CREATE, os.FileMode(0644))
+	file, err := os.OpenFile("../resources/"+ci.Result.Name+".go", os.O_TRUNC|os.O_CREATE|os.O_WRONLY, os.FileMode(0644))
 	if err != nil {
 		return err
 	}
@@ -158,7 +160,7 @@ func IsValidCi(ci string) bool {
 
 // This function connects to ServiceNow using the MetaData API to pull the details for every CI in
 // the CMDB.
-func (client *Client) ReadCIs(Class string, count int, ciClassList []CmdbCIMetaModel) ([]CmdbCIMetaModel, int, error) {
+func ReadCIs(Class string, count int, ciClassList []CmdbCIMetaModel, client *Client) ([]CmdbCIMetaModel, int, error) {
 
 	// This is a recursive function, this condition is the stop condition for
 	// the recursion.
@@ -169,12 +171,26 @@ func (client *Client) ReadCIs(Class string, count int, ciClassList []CmdbCIMetaM
 		return ciClassList, count, nil
 	}
 
-	snowClient := NewClient(BaseUrl, Userid, Password)
+	//snowClient := NewClient(BaseUrl, Userid, Password)
+	//var snowClient *Client
+	//if env, err := cli.GetEnvVars(); err != nil {
+	//	fmt.Printf("Environment Variables not set cannot connect to ServiceNow:%s", err)
+	//	return nil, count, err
+	//} else {
+	//	fmt.Printf("This is the userid:%s\n", env.Userid)
+	//	fmt.Printf("This is the pwd:%s\n", env.Password)
+	//	fmt.Printf("This is the url:%s\n", env.Url)
+	//	snowClient = NewClient(env.Url, env.Userid, env.Password)
+	//}
 	ci := CmdbCIMetaModel{}
-	if err := snowClient.GetCIMetaData(Api+Class, &ci); err != nil {
+	if err := GetCIMetaData(Api+Class, &ci, client); err != nil {
 		//TODO:  Need to interrogate and return error message
 		return ciClassList, count, err
 	}
+	//if err := GetCIMetaData(Api+Class, &ci, client); err != nil {
+	//	//TODO:  Need to interrogate and return error message
+	//	return ciClassList, count, err
+	//}
 	count++
 
 	ci.CiName = Class
@@ -188,7 +204,7 @@ func (client *Client) ReadCIs(Class string, count int, ciClassList []CmdbCIMetaM
 	ci.CiLabel = strings.ReplaceAll(ci.CiLabel, ".", "Dot")
 	ci.CiName = strings.ReplaceAll(ci.CiName, "-", "")
 	ci.CiName = strings.ReplaceAll(ci.CiName, "-", "")
-	ci.CiLabel = strings.ReplaceAll(ci.CiName, ".", "Dot")
+	ci.CiName = strings.ReplaceAll(ci.CiName, ".", "Dot")
 
 	ci.CiLabelCamelCase = CamelCaseString(ci.CiLabel)
 	ci.CiNameCamelCase = CamelCaseString(ci.CiName)
@@ -204,7 +220,7 @@ func (client *Client) ReadCIs(Class string, count int, ciClassList []CmdbCIMetaM
 	if len(ci.Result.Children) > 0 {
 		for _, child := range ci.Result.Children {
 			if IsValidCi(fmt.Sprintf("%v", child)) {
-				ciClassList, count, _ = client.ReadCIs(fmt.Sprintf("%v", child), count, ciClassList)
+				ciClassList, count, _ = ReadCIs(fmt.Sprintf("%v", child), count, ciClassList, client)
 			}
 		}
 	} else {
@@ -227,7 +243,7 @@ func (client *Client) WriteProviderToFile(ciList []CmdbCIMetaModel) error {
 		panic(err)
 	}
 
-	file, err := os.OpenFile("../resources/provider.go", os.O_TRUNC|os.O_CREATE, os.FileMode(0644))
+	file, err := os.OpenFile("../resources/provider.go", os.O_TRUNC|os.O_CREATE|os.O_WRONLY, os.FileMode(0644))
 	if err != nil {
 		return err
 	}
