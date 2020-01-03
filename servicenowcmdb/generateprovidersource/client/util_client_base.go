@@ -136,7 +136,7 @@ func (client *Client) WriteCIStructToFile(ci CmdbCIMetaModel) error {
 		panic(err)
 	}
 
-	file, err := os.OpenFile("../resources/"+ci.Result.Name+".go", os.O_TRUNC|os.O_CREATE, os.FileMode(0644))
+	file, err := os.OpenFile("../resources/"+ci.Result.Name+".go", os.O_TRUNC|os.O_CREATE|os.O_WRONLY, os.FileMode(0644))
 	if err != nil {
 		return err
 	}
@@ -243,7 +243,7 @@ func (client *Client) WriteProviderToFile(ciList []CmdbCIMetaModel) error {
 		panic(err)
 	}
 
-	file, err := os.OpenFile("../resources/provider.go", os.O_TRUNC|os.O_CREATE, os.FileMode(0644))
+	file, err := os.OpenFile("../resources/provider.go", os.O_TRUNC|os.O_CREATE|os.O_WRONLY, os.FileMode(0644))
 	if err != nil {
 		return err
 	}
