@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
-	"terraform-provider-servicenowcmdb/servicenowcmdb/cli"
+	"terraform-provider-servicenowcmdb/servicenowcmdb/generateprovidersource/cli"
 )
 
 func GetListOfClassesFromServiceNow(Class string, count int, ciClassList []CmdbCIMetaModel, client *Client, options *cli.Options) ([]CmdbCIMetaModel, int, error) {

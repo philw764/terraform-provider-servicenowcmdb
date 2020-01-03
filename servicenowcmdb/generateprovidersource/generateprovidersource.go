@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
-	"terraform-provider-servicenowcmdb/servicenowcmdb/cli"
+	"terraform-provider-servicenowcmdb/servicenowcmdb/generateprovidersource/cli"
 	"terraform-provider-servicenowcmdb/servicenowcmdb/generateprovidersource/client"
 )
 
