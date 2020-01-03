@@ -173,18 +173,6 @@ func ReadCIs(Class string, count int, ciClassList []CmdbCIMetaModel, client *Cli
 		//if Class == "" {
 		return ciClassList, count, nil
 	}
-	fmt.Printf("This is the options passed: %s", options)
-	//snowClient := NewClient(BaseUrl, Userid, Password)
-	//var snowClient *Client
-	//if env, err := cli.GetEnvVars(); err != nil {
-	//	fmt.Printf("Environment Variables not set cannot connect to ServiceNow:%s", err)
-	//	return nil, count, err
-	//} else {
-	//	fmt.Printf("This is the userid:%s\n", env.Userid)
-	//	fmt.Printf("This is the pwd:%s\n", env.Password)
-	//	fmt.Printf("This is the url:%s\n", env.Url)
-	//	snowClient = NewClient(env.Url, env.Userid, env.Password)
-	//}
 	ci := CmdbCIMetaModel{}
 	if err := GetCIMetaData(Api+Class, &ci, client); err != nil {
 		//TODO:  Need to interrogate and return error message
