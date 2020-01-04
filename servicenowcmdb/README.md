@@ -92,7 +92,7 @@ Now copy the example Terraform HCL script defined as the example above and run i
 then go to the Terraform web site to read how to download and install, it's pretty simple).  To run this script do the following:
 
 1.  terraform init
-```cassandraql
+```
 PS C:\Users\phil\temp\xx> terraform init
 
 Initializing the backend...
@@ -227,7 +227,7 @@ can't guarantee that exactly these actions will be performed if
 "terraform apply" is subsequently run.
 ```
 3. execute **terraform apply**
-```hcl-terraform
+```
 PS C:\Users\phil\temp\xx> terraform apply
 var.ServiceNowPwd
   Enter a value: T1v0l1uu
