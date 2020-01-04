@@ -80,7 +80,7 @@ func GetListOfClassesFromServiceNow(Class string, recurse bool, ciClassList []Cm
 	//	BaseCI = ci
 	//}
 
-	if len(ci.Result.Children) > 0 {
+	if len(ci.Result.Children) > 0 && recurse {
 		for _, child := range ci.Result.Children {
 			if IsValidCi(fmt.Sprintf("%v", child)) {
 				ciClassList, _ = GetListOfClassesFromServiceNow(fmt.Sprintf("%v", child), recurse, ciClassList, client)
@@ -107,12 +107,20 @@ func ProcessClassList(options *cli.Options) ([]CmdbCIMetaModel, error) {
 		snowClient = NewClient(env.Url, env.Userid, env.Password)
 	}
 	for class := range options.ClassList {
-		if ciList, err = GetListOfClassesFromServiceNow(class, true, ciList, snowClient); err != nil {
+		recurse := RecurseClasses(options.ClassList[class])
+		if ciList, err = GetListOfClassesFromServiceNow(class, recurse, ciList, snowClient); err != nil {
 			return nil, err
 		}
 	}
 	return ciList, nil
 
+}
+
+func RecurseClasses(recurseOption string) bool {
+	if strings.ToLower(recurseOption) == "recurse" {
+		return true
+	}
+	return false
 }
 
 //type ListofCisFound struct {
