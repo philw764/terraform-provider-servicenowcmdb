@@ -23,28 +23,12 @@ func GetListOfClassesFromServiceNow(Class string, recurse bool, ciClassList []Cm
 		//if Class == "" {
 		return ciClassList, nil
 	}
-	//fmt.Printf("This is the options passed: %s\n", options)
-	//snowClient := NewClient(BaseUrl, Userid, Password)
-	//var snowClient *Client
-	//if env, err := cli.GetEnvVars(); err != nil {
-	//	fmt.Printf("Environment Variables not set cannot connect to ServiceNow:%s", err)
-	//	return nil, count, err
-	//} else {
-	//	fmt.Printf("This is the userid:%s\n", env.Userid)
-	//	fmt.Printf("This is the pwd:%s\n", env.Password)
-	//	fmt.Printf("This is the url:%s\n", env.Url)
-	//	snowClient = NewClient(env.Url, env.Userid, env.Password)
-	//}
+
 	ci := CmdbCIMetaModel{}
 	if err := GetCIMetaData(Api+Class, &ci, client); err != nil {
 		//TODO:  Need to interrogate and return error message
 		return ciClassList, err
 	}
-	//if err := GetCIMetaData(Api+Class, &ci, client); err != nil {
-	//	//TODO:  Need to interrogate and return error message
-	//	return ciClassList, count, err
-	//}
-	//count++
 
 	ci.CiName = Class
 	ci.Version = Version
@@ -62,24 +46,19 @@ func GetListOfClassesFromServiceNow(Class string, recurse bool, ciClassList []Cm
 	ci.CiLabelCamelCase = CamelCaseString(ci.CiLabel)
 	ci.CiNameCamelCase = CamelCaseString(ci.CiName)
 
+	// Update each attribute with additional information required for template processing.
 	for Attribute := range ci.Result.Attributes {
 		attrs := &ci.Result.Attributes[Attribute]
 		attrs.AttributeCamelCase = CamelCaseString(attrs.Element)
 		attrs.AttrFlags = flags.Get(ci.CiLabelCamelCase, attrs.AttributeCamelCase)
-
-		//		if isBaseCIAttribute(attrs.Element, BaseCI) || ci.Result.Name == "cmdb_ci" {
-		//			attrs.IsBaseAttr = true
-		//		}
 	}
 
 	ciClassList = append(ciClassList, ci)
 
 	fmt.Println("The current CI being looked at:" + Class)
 
-	//if Class == BaseClass {
-	//	BaseCI = ci
-	//}
-
+	// If the current CI Class has children then recurse through each one to retrieve their records if
+	// the command line options or configuration file have specified "recurse" processing.
 	if len(ci.Result.Children) > 0 && recurse {
 		for _, child := range ci.Result.Children {
 			if IsValidCi(fmt.Sprintf("%v", child)) {
@@ -88,15 +67,16 @@ func GetListOfClassesFromServiceNow(Class string, recurse bool, ciClassList []Cm
 		}
 	} else {
 		return ciClassList, nil
-		//, _ = readCIs("", count)
 	}
 
 	return ciClassList, nil
 }
 
+// This function sets up the connection to ServiceNow and then ranges through all of the Classes to process as specified
+// in the options.ClassList command line option.
 func ProcessClassList(options *cli.Options) ([]CmdbCIMetaModel, error) {
 
-	var ciList []CmdbCIMetaModel
+	var CiList []CmdbCIMetaModel
 	var err error
 	// Set up the connection to ServiceNow
 	var snowClient *Client
@@ -106,29 +86,46 @@ func ProcessClassList(options *cli.Options) ([]CmdbCIMetaModel, error) {
 	} else {
 		snowClient = NewClient(env.Url, env.Userid, env.Password)
 	}
+	// Classlist is a map specified on the command line and/or config file identifying the classes to be included
+	// in the provider.  Each ClassList entry will be set to either "recurse" or "norecurse".  If the map entry
+	// is set to "recurse" then all of the child classes for the class are also retrieved and included.
 	for class := range options.ClassList {
 		recurse := RecurseClasses(options.ClassList[class])
-		if ciList, err = GetListOfClassesFromServiceNow(class, recurse, ciList, snowClient); err != nil {
-			return nil, err
+		if classAlreadyInCiList(class, CiList) {
+			continue
+		} else {
+			if CiList, err = GetListOfClassesFromServiceNow(class, recurse, CiList, snowClient); err != nil {
+				return nil, err
+			}
 		}
 	}
-	return ciList, nil
-
+	return CiList, nil
 }
 
+// This function ranges through the list of CI Classes already retrieved from ServiceNow to confirm that the
+// next CI Class to retrieve hasn't already been retrieved.  This is required to ensure that the class is not
+// included multiple times as a resource when the "provider.go" file is generated.  Duplicate resources defined in
+// the "provider.go" file will cause a compilation error when the provider is built.
+// TODO: Need to generate a report or at least a warning message when this occurs, at the moment tho I'm just
+//       ignoring it.
+func classAlreadyInCiList(class string, ciList []CmdbCIMetaModel) bool {
+
+	for c := range ciList {
+		if ciList[c].CiName == class {
+			fmt.Printf("This class has already been processed:%s", class)
+			return true
+		}
+	}
+	return false
+
+}
 func RecurseClasses(recurseOption string) bool {
 	if strings.ToLower(recurseOption) == "recurse" {
+
 		return true
 	}
 	return false
 }
-
-//type ListofCisFound struct {
-//	CiName           string
-//	CiNameCamelCase  string
-//	CiLabel          string
-//	CiLabelCamelCase string
-//}
 
 func CamelCaseString(str string) string {
 	x := strings.ReplaceAll(str, "_", " ")
