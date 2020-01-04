@@ -20,7 +20,6 @@ func GetListOfClassesFromServiceNow(Class string, recurse bool, ciClassList []Cm
 	//TODO: This is where I start tomorrow.  Now that I have the command line list of classes to retrieve I need to see
 	//		if the class retrieved is in the list to process.
 	if Class == "" {
-		//if Class == "" {
 		return ciClassList, nil
 	}
 

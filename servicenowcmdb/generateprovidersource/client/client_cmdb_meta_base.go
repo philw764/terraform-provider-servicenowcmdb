@@ -1,7 +1,6 @@
 package client
 
 type CmdbCIMetaModel struct {
-	//CmdbBaseObject
 	CiName           string
 	CiNameCamelCase  string
 	CiLabel          string
@@ -41,7 +40,6 @@ type CmdbCIMetaModel struct {
 }
 
 type CmdbCIAttribute struct {
-	//Attributes struct {
 	Reference    string `json:"reference"`
 	IsInherited  string `json:"is_inherited"`
 	IsMandatory  string `json:"is_mandatory"`
@@ -52,18 +50,7 @@ type CmdbCIAttribute struct {
 	Element      string `json:"element"`
 	MaxLength    string `json:"max_length"`
 	IsDisplay    string `json:"is_display"`
-	//} `json:"attributes"`
 }
-
-//func (c CmdbCIMetaModel) HasExtendedAttributes() bool {
-//
-//	for attr := range c.Result.Attributes {
-//		if !c.Result.Attributes[attr].IsBaseAttr {
-//			return true
-//		}
-//	}
-//	return false
-//}
 
 func (c CmdbCIMetaModel) IncludeAttribute(element string) bool {
 	var excludeList = []string{
