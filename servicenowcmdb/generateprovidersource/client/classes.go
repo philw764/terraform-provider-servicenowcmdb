@@ -76,9 +76,9 @@ func GetListOfClassesFromServiceNow(Class string, count int, ciClassList []CmdbC
 
 	fmt.Println("The current CI being looked at:" + Class + "\tCount is:" + strconv.Itoa(count))
 
-	if Class == BaseClass {
-		BaseCI = ci
-	}
+	//if Class == BaseClass {
+	//	BaseCI = ci
+	//}
 
 	if len(ci.Result.Children) > 0 {
 		for _, child := range ci.Result.Children {

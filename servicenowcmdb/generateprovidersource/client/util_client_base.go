@@ -11,14 +11,15 @@ import (
 
 //const BaseUrl = "https://dev75324.service-now.com/"
 const Api = "api/now/cmdb/meta/"
-const BaseClass = "cmdb_ci"
+
+//const BaseClass = "cmdb_ci"
 
 //const Userid = "admin"
 //const Password = "XXXXXX"
 const Version = "0.01"
 const BuildNumber = "1.00"
 
-var BaseCI CmdbCIMetaModel
+//var BaseCI CmdbCIMetaModel
 
 // Client is the client used to interact with ServiceNow API.
 type Client struct {
@@ -124,13 +125,13 @@ func (client *Client) WriteProviderToFile(ciList []CmdbCIMetaModel) error {
 //	return nil
 //}
 
-func isBaseCIAttribute(element string, BaseCI CmdbCIMetaModel) bool {
-	for attribute := range BaseCI.Result.Attributes {
-		attrs := BaseCI.Result.Attributes[attribute]
-		if element == attrs.Element {
-			return true
-		}
-	}
-
-	return false
-}
+//func isBaseCIAttribute(element string, BaseCI CmdbCIMetaModel) bool {
+//	for attribute := range BaseCI.Result.Attributes {
+//		attrs := BaseCI.Result.Attributes[attribute]
+//		if element == attrs.Element {
+//			return true
+//		}
+//	}
+//
+//	return false
+//}
