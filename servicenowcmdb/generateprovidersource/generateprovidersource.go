@@ -54,28 +54,30 @@ func main() {
 	}
 
 	// Set up the connection to ServiceNow
-	var snowClient *client.Client
-	if env, err := cli.GetEnvVars(); err != nil {
-		fmt.Printf("Environment Variables not set cannot connect to ServiceNow:%s\n", err)
-		os.Exit(1)
-	} else {
-		snowClient = client.NewClient(env.Url, env.Userid, env.Password)
-	}
+	//var snowClient *client.Client
+	//if env, err := cli.GetEnvVars(); err != nil {
+	//	fmt.Printf("Environment Variables not set cannot connect to ServiceNow:%s\n", err)
+	//	os.Exit(1)
+	//} else {
+	//	snowClient = client.NewClient(env.Url, env.Userid, env.Password)
+	//}
 
 	// Create a list to store the metadata for each CMDB CI Class retrieved from ServiceNow.
 	var CiList []client.CmdbCIMetaModel
-
-	CiList, count, err := client.GetListOfClassesFromServiceNow("cmdb_ci_server", 0, CiList, snowClient, &options)
-	if err != nil {
-		fmt.Println("Failed to get data. Is ServiceNow running?  If it is, check credentials as correct")
-	} else {
-		// Now that the list of CI Classes have been retrieved, call WriteCIResourcesToFile to create a resource
-		// file for each CI Class.  Each resource file is created using the CI Class name.
-		for ci := range CiList {
-			_ = snowClient.WriteCIResourcesToFile(CiList[ci])
-		}
-		// Call WriteProviderToFile is called to generate the "provider.go" file
-		_ = snowClient.WriteProviderToFile(CiList)
-		fmt.Printf("the number of records processed is: %v", count)
+	if CiList, err = client.ProcessClassList(&options); err != nil {
+		os.Exit(1)
 	}
+
+	//CiList, count, err := client.GetListOfClassesFromServiceNow("cmdb_ci_server", 0, CiList, snowClient, &options)
+	//if err != nil {
+	//	fmt.Println("Failed to get data. Is ServiceNow running?  If it is, check credentials as correct")
+	//} else {
+	// Now that the list of CI Classes have been retrieved, call WriteCIResourcesToFile to create a resource
+	// file for each CI Class.  Each resource file is created using the CI Class name.
+	for ci := range CiList {
+		_ = client.WriteCIResourcesToFile(CiList[ci])
+	}
+	// Call WriteProviderToFile is called to generate the "provider.go" file
+	_ = client.WriteProviderToFile(CiList)
+	//fmt.Printf("the number of records processed is: %v", count)
 }

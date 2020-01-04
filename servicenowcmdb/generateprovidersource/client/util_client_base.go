@@ -47,7 +47,7 @@ func NewClient(baseURL string, username string, password string) *Client {
 	}
 }
 
-func (client *Client) WriteCIResourcesToFile(ci CmdbCIMetaModel) error {
+func WriteCIResourcesToFile(ci CmdbCIMetaModel) error {
 
 	//for Attribute := range ci.Result.Attributes {
 	//	attrs := &ci.Result.Attributes[Attribute]
@@ -94,7 +94,7 @@ func IsValidCi(ci string) bool {
 // This function connects to ServiceNow using the MetaData API to pull the details for every CI in
 // the CMDB.
 
-func (client *Client) WriteProviderToFile(ciList []CmdbCIMetaModel) error {
+func WriteProviderToFile(ciList []CmdbCIMetaModel) error {
 
 	resourceTemplate, err := ioutil.ReadFile("templates/provider.tmpl")
 	if err != nil {

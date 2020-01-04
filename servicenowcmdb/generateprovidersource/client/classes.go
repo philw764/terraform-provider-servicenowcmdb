@@ -6,24 +6,24 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"strconv"
+	"os"
 	"strings"
 	"terraform-provider-servicenowcmdb/servicenowcmdb/generateprovidersource/cli"
 	"terraform-provider-servicenowcmdb/servicenowcmdb/generateprovidersource/flags"
 )
 
-func GetListOfClassesFromServiceNow(Class string, count int, ciClassList []CmdbCIMetaModel, client *Client, options *cli.Options) ([]CmdbCIMetaModel, int, error) {
+func GetListOfClassesFromServiceNow(Class string, recurse bool, ciClassList []CmdbCIMetaModel, client *Client) ([]CmdbCIMetaModel, error) {
 
 	// This is a recursive function, this condition is the stop condition for
 	// the recursion.
 
 	//TODO: This is where I start tomorrow.  Now that I have the command line list of classes to retrieve I need to see
 	//		if the class retrieved is in the list to process.
-	if Class == "" || count == 50 {
+	if Class == "" {
 		//if Class == "" {
-		return ciClassList, count, nil
+		return ciClassList, nil
 	}
-	fmt.Printf("This is the options passed: %s\n", options)
+	//fmt.Printf("This is the options passed: %s\n", options)
 	//snowClient := NewClient(BaseUrl, Userid, Password)
 	//var snowClient *Client
 	//if env, err := cli.GetEnvVars(); err != nil {
@@ -38,13 +38,13 @@ func GetListOfClassesFromServiceNow(Class string, count int, ciClassList []CmdbC
 	ci := CmdbCIMetaModel{}
 	if err := GetCIMetaData(Api+Class, &ci, client); err != nil {
 		//TODO:  Need to interrogate and return error message
-		return ciClassList, count, err
+		return ciClassList, err
 	}
 	//if err := GetCIMetaData(Api+Class, &ci, client); err != nil {
 	//	//TODO:  Need to interrogate and return error message
 	//	return ciClassList, count, err
 	//}
-	count++
+	//count++
 
 	ci.CiName = Class
 	ci.Version = Version
@@ -74,7 +74,7 @@ func GetListOfClassesFromServiceNow(Class string, count int, ciClassList []CmdbC
 
 	ciClassList = append(ciClassList, ci)
 
-	fmt.Println("The current CI being looked at:" + Class + "\tCount is:" + strconv.Itoa(count))
+	fmt.Println("The current CI being looked at:" + Class)
 
 	//if Class == BaseClass {
 	//	BaseCI = ci
@@ -83,15 +83,36 @@ func GetListOfClassesFromServiceNow(Class string, count int, ciClassList []CmdbC
 	if len(ci.Result.Children) > 0 {
 		for _, child := range ci.Result.Children {
 			if IsValidCi(fmt.Sprintf("%v", child)) {
-				ciClassList, count, _ = GetListOfClassesFromServiceNow(fmt.Sprintf("%v", child), count, ciClassList, client, options)
+				ciClassList, _ = GetListOfClassesFromServiceNow(fmt.Sprintf("%v", child), recurse, ciClassList, client)
 			}
 		}
 	} else {
-		return ciClassList, count, nil
+		return ciClassList, nil
 		//, _ = readCIs("", count)
 	}
 
-	return ciClassList, count, nil
+	return ciClassList, nil
+}
+
+func ProcessClassList(options *cli.Options) ([]CmdbCIMetaModel, error) {
+
+	var ciList []CmdbCIMetaModel
+	var err error
+	// Set up the connection to ServiceNow
+	var snowClient *Client
+	if env, err := cli.GetEnvVars(); err != nil {
+		fmt.Printf("Environment Variables not set cannot connect to ServiceNow:%s\n", err)
+		os.Exit(1)
+	} else {
+		snowClient = NewClient(env.Url, env.Userid, env.Password)
+	}
+	for class := range options.ClassList {
+		if ciList, err = GetListOfClassesFromServiceNow(class, true, ciList, snowClient); err != nil {
+			return nil, err
+		}
+	}
+	return ciList, nil
+
 }
 
 //type ListofCisFound struct {
