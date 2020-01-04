@@ -55,15 +55,15 @@ type CmdbCIAttribute struct {
 	//} `json:"attributes"`
 }
 
-func (c CmdbCIMetaModel) HasExtendedAttributes() bool {
-
-	for attr := range c.Result.Attributes {
-		if !c.Result.Attributes[attr].IsBaseAttr {
-			return true
-		}
-	}
-	return false
-}
+//func (c CmdbCIMetaModel) HasExtendedAttributes() bool {
+//
+//	for attr := range c.Result.Attributes {
+//		if !c.Result.Attributes[attr].IsBaseAttr {
+//			return true
+//		}
+//	}
+//	return false
+//}
 
 func (c CmdbCIMetaModel) IncludeAttribute(element string) bool {
 	var excludeList = []string{

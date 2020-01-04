@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"strings"
 	"terraform-provider-servicenowcmdb/servicenowcmdb/generateprovidersource/cli"
+	"terraform-provider-servicenowcmdb/servicenowcmdb/generateprovidersource/flags"
 )
 
 func GetListOfClassesFromServiceNow(Class string, count int, ciClassList []CmdbCIMetaModel, client *Client, options *cli.Options) ([]CmdbCIMetaModel, int, error) {
@@ -60,6 +61,16 @@ func GetListOfClassesFromServiceNow(Class string, count int, ciClassList []CmdbC
 
 	ci.CiLabelCamelCase = CamelCaseString(ci.CiLabel)
 	ci.CiNameCamelCase = CamelCaseString(ci.CiName)
+
+	for Attribute := range ci.Result.Attributes {
+		attrs := &ci.Result.Attributes[Attribute]
+		attrs.AttributeCamelCase = CamelCaseString(attrs.Element)
+		attrs.AttrFlags = flags.Get(ci.CiLabelCamelCase, attrs.AttributeCamelCase)
+
+		//		if isBaseCIAttribute(attrs.Element, BaseCI) || ci.Result.Name == "cmdb_ci" {
+		//			attrs.IsBaseAttr = true
+		//		}
+	}
 
 	ciClassList = append(ciClassList, ci)
 

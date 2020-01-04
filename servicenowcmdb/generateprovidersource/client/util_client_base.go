@@ -5,8 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 	"strings"
-	//"terraform-provider-servicenowcmdb/servicenowcmdb/cli"
-	"terraform-provider-servicenowcmdb/servicenowcmdb/generateprovidersource/flags"
+
 	"text/template"
 )
 
@@ -49,15 +48,15 @@ func NewClient(baseURL string, username string, password string) *Client {
 
 func (client *Client) WriteCIResourcesToFile(ci CmdbCIMetaModel) error {
 
-	for Attribute := range ci.Result.Attributes {
-		attrs := &ci.Result.Attributes[Attribute]
-		attrs.AttributeCamelCase = CamelCaseString(attrs.Element)
-		attrs.AttrFlags = flags.Get(ci.CiLabelCamelCase, attrs.AttributeCamelCase)
+	//for Attribute := range ci.Result.Attributes {
+	//	attrs := &ci.Result.Attributes[Attribute]
+	//	attrs.AttributeCamelCase = CamelCaseString(attrs.Element)
+	//	attrs.AttrFlags = flags.Get(ci.CiLabelCamelCase, attrs.AttributeCamelCase)
 
-		if isBaseCIAttribute(attrs.Element, BaseCI) || ci.Result.Name == "cmdb_ci" {
-			attrs.IsBaseAttr = true
-		}
-	}
+	//		if isBaseCIAttribute(attrs.Element, BaseCI) || ci.Result.Name == "cmdb_ci" {
+	//			attrs.IsBaseAttr = true
+	//		}
+	//}
 
 	resourceTemplate, err := ioutil.ReadFile("templates/cmdb_ci_template.tmpl")
 	if err != nil {
