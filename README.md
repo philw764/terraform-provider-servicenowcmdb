@@ -163,7 +163,7 @@ Terraform will perform the following actions:
         first_discovered     = "2019-12-14 22:11:40"
         id                   = "868b30562f21c410dadacfedf699b6ee"
         install_status       = "1"
-      ~ ip_address           = "10.0.0.2" -> "10.0.0.3"
+      ~ ip_address           = "10.0.0.3" -> "10.0.0.4"
         last_discovered      = "2019-12-17 05:14:21"
         location             = {
             "display_value" = "1112 18th Street, Plano,TX"
@@ -192,33 +192,15 @@ Terraform will perform the following actions:
         subcategory          = "Computer"
         support_group        = {}
         supported_by         = {}
-        sys_mod_count        = "13"
+        sys_mod_count        = "14"
         sys_updated_by       = "admin"
-        sys_updated_on       = "2019-12-15 02:07:18"
+        sys_updated_on       = "2020-01-04 06:21:52"
         unverified           = "false"
         vendor               = {}
         virtual              = "false"
     }
 
 Plan: 0 to add, 1 to change, 0 to destroy.
-
-Warning: Interpolation-only expressions are deprecated
-
-  on testcase1.tf line 2, in provider "servicenowcmdb":
-   2:   instance_url = "${var.ServiceNowUrl}"
-
-Terraform 0.11 and earlier required all non-constant expressions to be
-provided via interpolation syntax, but this pattern is now deprecated. To
-silence this warning, remove the "${ sequence from the start and the }"
-sequence from the end of this expression, leaving just the inner expression.
-
-Template interpolation syntax is still used to construct strings from
-expressions when the template includes multiple interpolation sequences or a
-mixture of literal strings and interpolations. This deprecation applies only
-to templates that consist entirely of a single interpolation sequence.
-
-(and 2 more similar warnings elsewhere)
-
 
 ------------------------------------------------------------------------
 
@@ -230,10 +212,10 @@ can't guarantee that exactly these actions will be performed if
 ```
 PS C:\Users\phil\temp\xx> terraform apply
 var.ServiceNowPwd
-  Enter a value: T1v0l1uu
+  Enter a value: XXXXXX
 
 var.ServiceNowUrl
-  Enter a value: https://dev75324.service-now.com/
+  Enter a value: https://XXXXXXX.service-now.com/
 
 var.ServiceNowUser
   Enter a value: admin
@@ -274,7 +256,7 @@ Terraform will perform the following actions:
         first_discovered     = "2019-12-14 22:11:40"
         id                   = "868b30562f21c410dadacfedf699b6ee"
         install_status       = "1"
-      ~ ip_address           = "10.0.0.2" -> "10.0.0.3"
+      ~ ip_address           = "10.0.0.3" -> "10.0.0.4"
         last_discovered      = "2019-12-17 05:14:21"
         location             = {
             "display_value" = "1112 18th Street, Plano,TX"
@@ -303,33 +285,15 @@ Terraform will perform the following actions:
         subcategory          = "Computer"
         support_group        = {}
         supported_by         = {}
-        sys_mod_count        = "13"
+        sys_mod_count        = "14"
         sys_updated_by       = "admin"
-        sys_updated_on       = "2019-12-15 02:07:18"
+        sys_updated_on       = "2020-01-04 06:21:52"
         unverified           = "false"
         vendor               = {}
         virtual              = "false"
     }
 
 Plan: 0 to add, 1 to change, 0 to destroy.
-
-
-Warning: Interpolation-only expressions are deprecated
-
-  on testcase1.tf line 2, in provider "servicenowcmdb":
-   2:   instance_url = "${var.ServiceNowUrl}"
-
-Terraform 0.11 and earlier required all non-constant expressions to be
-provided via interpolation syntax, but this pattern is now deprecated. To
-silence this warning, remove the "${ sequence from the start and the }"
-sequence from the end of this expression, leaving just the inner expression.
-
-Template interpolation syntax is still used to construct strings from
-expressions when the template includes multiple interpolation sequences or a
-mixture of literal strings and interpolations. This deprecation applies only
-to templates that consist entirely of a single interpolation sequence.
-
-(and 2 more similar warnings elsewhere)
 
 Do you want to perform these actions?
   Terraform will perform the actions described above.
@@ -338,7 +302,7 @@ Do you want to perform these actions?
   Enter a value: yes
 
 servicenowcmdb_windows_server.testci4: Modifying... [id=868b30562f21c410dadacfedf699b6ee]
-servicenowcmdb_windows_server.testci4: Modifications complete after 3s [id=868b30562f21c410dadacfedf699b6ee]
+servicenowcmdb_windows_server.testci4: Modifications complete after 2s [id=868b30562f21c410dadacfedf699b6ee]
 
 Apply complete! Resources: 0 added, 1 changed, 0 destroyed.
 ```
