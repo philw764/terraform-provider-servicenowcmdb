@@ -16,7 +16,6 @@ package resources
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
@@ -289,6 +288,7 @@ func ResourceCmdbCi() *schema.Resource {
 			},
 			"operational_status": {
 				Type:     schema.TypeString,
+				Computed: true,
 				Optional: true,
 			},
 			"sys_updated_on": {
@@ -923,11 +923,11 @@ func deleteResourceCmdbCi(resourceData *schema.ResourceData, serviceNowClient in
 	servicenowClient := serviceNowClient.(*Client)
 	var ci CmdbCiPost
 	if err := copyFromTerraformToServiceNowCmdbCi(resourceData, &ci); err != nil {
-		return err
+		//return err
 	}
 
-	if err := resourceData.Set("install_status", "retired"); err != nil {
-		return fmt.Errorf("CmdbCifailed to set install_status field during destroy action %s", err)
+	if err := resourceData.Set("install_status", "7"); err != nil {
+		//return fmt.Errorf("CmdbCifailed to set install_status field during destroy action %s", err)
 	}
 
 	SnowUrl := CMDBInstanceApi + CiNamecmdb_ci + "/" + resourceData.Id()
