@@ -217,7 +217,6 @@ return readResource{{.CiLabelCamelCase}}(resourceData, serviceNowClient)
 //
 func deleteResource{{.CiLabelCamelCase}}(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
 
-//servicenowClient := serviceNowClient.(*Client)
 var ci {{.CiLabelCamelCase}}Post
 if err := copyFromTerraformToServiceNow{{.CiLabelCamelCase}}(resourceData, &ci); err != nil {
 return err
@@ -230,16 +229,11 @@ return fmt.Errorf("{{.CiLabelCamelCase}}failed to set install_status field durin
 if err := resourceData.Set("operational_status", "6"); err != nil {
 return fmt.Errorf("{{.CiLabelCamelCase}}failed to set install_status field during destroy action %s", err)
 }
-//SnowUrl := CMDBInstanceApi + CiName{{.CiName}} + "/" + resourceData.Id()
-//jsonData, err := servicenowClient.RequestJSON("PATCH", SnowUrl, ci.Result)
-//_, err := servicenowClient.RequestJSON("PATCH", SnowUrl, ci.Result)
+
 if err := updateResource{{.CiLabelCamelCase}}(resourceData, serviceNowClient); err != nil {
+        resourceData.SetId("")
 		return err
 	}
-//if err != nil {
-//resourceData.SetId("")
-//return err
-//}
 return nil
 }
 
