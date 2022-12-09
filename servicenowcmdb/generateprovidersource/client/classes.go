@@ -103,10 +103,11 @@ func ProcessClassList(options *cli.Options) ([]CmdbCIMetaModel, error) {
 
 // This function ranges through the list of CI Classes already retrieved from ServiceNow to confirm that the
 // next CI Class to retrieve hasn't already been retrieved.  This is required to ensure that the class is not
-// included multiple times as a resource when the "provider.go" file is generated.  Duplicate resources defined in
-// the "provider.go" file will cause a compilation error when the provider is built.
+// included multiple times as a resource when the "provider_baseline.go" file is generated.  Duplicate resources defined in
+// the "provider_baseline.go" file will cause a compilation error when the provider is built.
 // TODO: Need to generate a report or at least a warning message when this occurs, at the moment tho I'm just
-//       ignoring it.
+//
+//	ignoring it.
 func classAlreadyInCiList(class string, ciList []CmdbCIMetaModel) bool {
 
 	for c := range ciList {

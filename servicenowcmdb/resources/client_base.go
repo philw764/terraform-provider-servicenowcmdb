@@ -5,7 +5,8 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"io"
 	"net/http"
 )
 
@@ -29,6 +30,12 @@ var AttributesToExclude = []string{
 	"sys_mod_count",
 	"sys_tags",
 	"",
+}
+
+type LinkRelStruct struct {
+	DisplayValue string `json:"display_value"`
+	Link         string `json:"link"`
+	Value        string `json:"value"`
 }
 
 type ModelIDRel struct {
@@ -280,7 +287,39 @@ func StructToMap(in interface{}) map[string]interface{} {
 	m := make(map[string]interface{})
 	j, _ := json.Marshal(in)
 	json.Unmarshal(j, &m)
+
 	return m
+}
+
+func StructToList(value string, link string, display_value string) []interface{} {
+	result := make([]interface{}, 1, 1)
+	r := make(map[string]interface{})
+	r["display_value"] = display_value
+	r["value"] = value
+	r["link"] = link
+	result[0] = r
+
+	return result
+
+}
+
+func StructToList2(value string) []interface{} {
+	result := make([]interface{}, 1, 1)
+	r := make(map[string]interface{})
+	r["value"] = value
+	result[0] = r
+
+	return result
+
+}
+
+func FlattenLinkRel(linkRel string, resourceData *schema.ResourceData) string {
+	relsRaw := resourceData.Get(linkRel).([]interface{})
+	for _, raw := range relsRaw {
+		i := raw.(map[string]interface{})
+		return i["value"].(string)
+	}
+	return ""
 }
 
 // requestJSON execute an HTTP request and returns the raw response data.
@@ -306,7 +345,7 @@ func (client *Client) RequestJSON(method string, path string, jsonData interface
 	if err != nil {
 		return nil, err
 	}
-	responseData, _ := ioutil.ReadAll(response.Body)
+	responseData, _ := io.ReadAll(response.Body)
 
 	if response.StatusCode >= 300 || response.StatusCode < 200 {
 		return nil, fmt.Errorf("HTTP response status %s, %s", response.Status, responseData)

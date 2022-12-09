@@ -15,9 +15,11 @@ package resources
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 import (
 
+"context"
 "encoding/json"
-"fmt"
-"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+//"fmt"
+"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 // This constant stores the name of the CI and is used to construct the URL to ServiceNow
 const CiName{{.CiName}}  = "{{.Result.Name}}"
@@ -89,10 +91,10 @@ Attributes   struct {
 
 func Resource{{.CiLabelCamelCase}}() *schema.Resource {
 return &schema.Resource{
-Create: createResource{{.CiLabelCamelCase}},
-Read:   readResource{{.CiLabelCamelCase}},
-Update: updateResource{{.CiLabelCamelCase}},
-Delete: deleteResource{{.CiLabelCamelCase}},
+CreateContext: createResource{{.CiLabelCamelCase}},
+ReadContext:   readResource{{.CiLabelCamelCase}},
+UpdateContext: updateResource{{.CiLabelCamelCase}},
+DeleteContext: deleteResource{{.CiLabelCamelCase}},
 
 Importer: &schema.ResourceImporter{
 State:schema.ImportStatePassthrough,
@@ -105,14 +107,14 @@ Schema: map[string]*schema.Schema{
         {{- if $.IncludeAttribute .Element}}
             {{- if .Reference}}
                 "{{.Element}}" : {
-                Type:     schema.TypeMap,
+                Type:     schema.TypeList,
                 Optional: true,
                 Computed: true,
                 Elem: &schema.Resource{
                 Schema: map[string]*schema.Schema{
                 "display_value": {
                 Type:     schema.TypeString,
-                Computed: true,
+                Optional: true,
                 },
                 "value": {
                 Type:     schema.TypeString,
@@ -142,13 +144,13 @@ Schema: map[string]*schema.Schema{
 
 //  Create routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
 //
-func createResource{{.CiLabelCamelCase}}(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
+func createResource{{.CiLabelCamelCase}}(ctx context.Context,resourceData *schema.ResourceData, serviceNowClient interface{}) diag.Diagnostics {
 
 servicenowClient := serviceNowClient.(*Client) //Client Connection details
 // Use common function to update base attributes
 var ci {{.CiLabelCamelCase}}Post
 if err := copyFromTerraformToServiceNow{{.CiLabelCamelCase}}(resourceData, &ci); err != nil {
-return err
+return diag.FromErr(err)
 }
 
 //t := time.Now()
@@ -161,16 +163,16 @@ SnowUrl := CMDBInstanceApi + CiName{{.CiName}} + "?sysparm_fields=sys_id"
 jsonData, err := servicenowClient.RequestJSON("POST", SnowUrl, ci.Result)
 if err != nil {
 resourceData.SetId("")
-return err
+return diag.FromErr(err)
 }
 
 resourceData.SetId(GetSysId(jsonData))
-return readResource{{.CiLabelCamelCase}}(resourceData, serviceNowClient)
+return readResource{{.CiLabelCamelCase}}(ctx,resourceData, serviceNowClient)
 }
 
 //  Read routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
 //
-func readResource{{.CiLabelCamelCase}}(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
+func readResource{{.CiLabelCamelCase}}(ctx context.Context,resourceData *schema.ResourceData, serviceNowClient interface{}) diag.Diagnostics {
 
 servicenowClient := serviceNowClient.(*Client)
 SnowUrl := CMDBInstanceApi + CiName{{.CiName}} + "/" + resourceData.Id()
@@ -178,11 +180,11 @@ var jsonData []byte
 jsonData, err := servicenowClient.RequestJSON("GET", SnowUrl, nil)
 if err != nil {
 resourceData.SetId("")
-return err
+return diag.FromErr(err)
 }
 
 if err := copyFromServiceNowToTerraform{{.CiLabelCamelCase}}(resourceData,jsonData);  err != nil {
-return err
+return diag.FromErr(err)
 }
 
 return nil
@@ -190,12 +192,12 @@ return nil
 
 //  Update routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
 //
-func updateResource{{.CiLabelCamelCase}}(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
+func updateResource{{.CiLabelCamelCase}}(ctx context.Context,resourceData *schema.ResourceData, serviceNowClient interface{}) diag.Diagnostics {
 servicenowClient := serviceNowClient.(*Client)
 
 var ci {{.CiLabelCamelCase}}Post
 if err := copyFromTerraformToServiceNow{{.CiLabelCamelCase}}(resourceData, &ci); err != nil {
-return err
+return diag.FromErr(err)
 }
 
 SnowUrl := CMDBInstanceApi + CiName{{.CiName}} + "/" + resourceData.Id()
@@ -203,9 +205,9 @@ SnowUrl := CMDBInstanceApi + CiName{{.CiName}} + "/" + resourceData.Id()
 _, err := servicenowClient.RequestJSON("PATCH", SnowUrl, ci.Result)
 if err != nil {
 resourceData.SetId("")
-return err
+return diag.FromErr(err)
 }
-return readResource{{.CiLabelCamelCase}}(resourceData, serviceNowClient)
+return readResource{{.CiLabelCamelCase}}(ctx,resourceData, serviceNowClient)
 }
 
 // TODO:  Need to work out what to do with deleting CIs. ServiceNow does not support deleting CIs via the API
@@ -215,25 +217,27 @@ return readResource{{.CiLabelCamelCase}}(resourceData, serviceNowClient)
 
 //  Delete routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
 //
-func deleteResource{{.CiLabelCamelCase}}(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
+func deleteResource{{.CiLabelCamelCase}}(ctx context.Context,resourceData *schema.ResourceData, serviceNowClient interface{}) diag.Diagnostics {
 
 //servicenowClient := serviceNowClient.(*Client)
 var ci {{.CiLabelCamelCase}}Post
 if err := copyFromTerraformToServiceNow{{.CiLabelCamelCase}}(resourceData, &ci); err != nil {
-return err
+return diag.FromErr(err)
 }
 
 if err := resourceData.Set("install_status", "7"); err != nil {
-return fmt.Errorf("{{.CiLabelCamelCase}}failed to set install_status field during destroy action %s", err)
+//return fmt.Errorf("{{.CiLabelCamelCase}}failed to set install_status field during destroy action %s", err)
+return diag.FromErr(err)
 }
 
 if err := resourceData.Set("operational_status", "6"); err != nil {
-return fmt.Errorf("{{.CiLabelCamelCase}}failed to set install_status field during destroy action %s", err)
+//return fmt.Errorf("{{.CiLabelCamelCase}}failed to set install_status field during destroy action %s", err)
+return diag.FromErr(err)
 }
 //SnowUrl := CMDBInstanceApi + CiName{{.CiName}} + "/" + resourceData.Id()
 //jsonData, err := servicenowClient.RequestJSON("PATCH", SnowUrl, ci.Result)
 //_, err := servicenowClient.RequestJSON("PATCH", SnowUrl, ci.Result)
-if err := updateResource{{.CiLabelCamelCase}}(resourceData, serviceNowClient); err != nil {
+if err := updateResource{{.CiLabelCamelCase}}(ctx,resourceData, serviceNowClient); err != nil {
 		return err
 	}
 //if err != nil {
@@ -254,7 +258,9 @@ attrs := &ci.Result.Attributes
     {{- range .}}
         {{- if $.IncludeAttribute .Element}}
             {{- if .Reference}}
-                attrs.{{.AttributeCamelCase}}  = resourceData.Get("{{.Element}}.value").(string)
+                //attrs.{{.AttributeCamelCase}}  = resourceData.Get("{{.Element}}.value").(string)
+                attrs.{{.AttributeCamelCase}}  = FlattenLinkRel("{{.Element}}", resourceData)
+
             {{- else}}
                 attrs.{{.AttributeCamelCase}}  = resourceData.Get("{{.Element}}").(string)
             {{- end}}
@@ -286,7 +292,9 @@ attrs := ci.Result.Attributes
             {{- if not .Reference}}
                 _ = resourceData.Set("{{.Element}}", attrs.{{.AttributeCamelCase}})
             {{- else}}
-                _ = resourceData.Set("{{.Element}}", StructToMap(attrs.{{.AttributeCamelCase}}))
+                //_ = resourceData.Set("{{.Element}}", StructToMap(attrs.{{.AttributeCamelCase}}))
+                _ = resourceData.Set("{{.Element}}", StructToList(attrs.{{.AttributeCamelCase}}.Value,attrs.{{.AttributeCamelCase}}.Link,attrs.{{.AttributeCamelCase}}.DisplayValue))
+
             {{- end}}
         {{- end}}
     {{- end}}

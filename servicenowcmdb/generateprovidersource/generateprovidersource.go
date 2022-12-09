@@ -64,7 +64,7 @@ func main() {
 	for ci := range CiList {
 		_ = client.WriteCIResourcesToFile(CiList[ci])
 	}
-	// Call WriteProviderToFile is called to generate the "provider.go" file
+	// Call WriteProviderToFile is called to generate the "provider_baseline.go" file
 	_ = client.WriteProviderToFile(CiList)
 	//fmt.Printf("the number of records processed is: %v", count)
 }

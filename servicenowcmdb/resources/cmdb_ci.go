@@ -9,14 +9,17 @@ package resources
 // Generator Version   : 1.00
 //
 //  Description       :   This file is the resource provider for the cmdb_ci CMDB Class.  This code is executed
-//                        when the servicenowcmdb_cmdb_ci keyword is used in a terraform script (*.tf) file
+//                        when the servicenowcmdb_configuration_item keyword is used in a terraform script (*.tf) file
 //
 //                        This file is will need to be regenerated if the ServiceNow CMDB base CI Class
 //                        "cmdb_ci" or of the cmdb_ci CI Class is modified.
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 import (
+	"context"
 	"encoding/json"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	//"fmt"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 // This constant stores the name of the CI and is used to construct the URL to ServiceNow
@@ -24,81 +27,91 @@ const CiNamecmdb_ci = "cmdb_ci"
 
 // This is the structure to construct the JSON payload when POSTing to ServiceNow.  This is needed because
 // ServiceNow has strict parsing on the JSON Data and will fail if the JSON format doesn't match exactly.
-// This is essentially the same as CmdbCiGet but does not contain the "value", "link" and
+// This is essentially the same as ConfigurationItemGet but does not contain the "value", "link" and
 // "display_value" fields for reference objects.
 //
 // The generateprovidersource utility constructs this STRUCT from metadata pulled from ServiceNow.
-//
-type CmdbCiPost struct {
+type ConfigurationItemPost struct {
 	Result struct {
 		Attributes struct {
-			SkipSync            string `json:"skip_sync,omitempty"`
-			OperationalStatus   string `json:"operational_status,omitempty"`
-			SysUpdatedOn        string `json:"sys_updated_on,omitempty"`
-			DiscoverySource     string `json:"discovery_source,omitempty"`
-			FirstDiscovered     string `json:"first_discovered,omitempty"`
-			SysUpdatedBy        string `json:"sys_updated_by,omitempty"`
-			DueIn               string `json:"due_in,omitempty"`
-			SysCreatedOn        string `json:"sys_created_on,omitempty"`
-			InstallDate         string `json:"install_date,omitempty"`
-			InvoiceNumber       string `json:"invoice_number,omitempty"`
-			GlAccount           string `json:"gl_account,omitempty"`
-			SysCreatedBy        string `json:"sys_created_by,omitempty"`
-			WarrantyExpiration  string `json:"warranty_expiration,omitempty"`
-			AssetTag            string `json:"asset_tag,omitempty"`
-			Fqdn                string `json:"fqdn,omitempty"`
-			ChangeControl       string `json:"change_control,omitempty"`
-			OwnedBy             string `json:"owned_by,omitempty"`
-			CheckedOut          string `json:"checked_out,omitempty"`
-			SysDomainPath       string `json:"sys_domain_path,omitempty"`
-			DeliveryDate        string `json:"delivery_date,omitempty"`
-			MaintenanceSchedule string `json:"maintenance_schedule,omitempty"`
-			InstallStatus       string `json:"install_status,omitempty"`
-			CostCenter          string `json:"cost_center,omitempty"`
-			SupportedBy         string `json:"supported_by,omitempty"`
-			DnsDomain           string `json:"dns_domain,omitempty"`
-			Name                string `json:"name,omitempty"`
-			Assigned            string `json:"assigned,omitempty"`
-			PurchaseDate        string `json:"purchase_date,omitempty"`
-			Subcategory         string `json:"subcategory,omitempty"`
-			ShortDescription    string `json:"short_description,omitempty"`
-			AssignmentGroup     string `json:"assignment_group,omitempty"`
-			ManagedBy           string `json:"managed_by,omitempty"`
-			LastDiscovered      string `json:"last_discovered,omitempty"`
-			CanPrint            string `json:"can_print,omitempty"`
-			Manufacturer        string `json:"manufacturer,omitempty"`
-			PoNumber            string `json:"po_number,omitempty"`
-			CheckedIn           string `json:"checked_in,omitempty"`
-			Vendor              string `json:"vendor,omitempty"`
-			MacAddress          string `json:"mac_address,omitempty"`
-			Company             string `json:"company,omitempty"`
-			ModelNumber         string `json:"model_number,omitempty"`
-			Justification       string `json:"justification,omitempty"`
-			Department          string `json:"department,omitempty"`
-			AssignedTo          string `json:"assigned_to,omitempty"`
-			StartDate           string `json:"start_date,omitempty"`
-			Cost                string `json:"cost,omitempty"`
-			Comments            string `json:"comments,omitempty"`
-			SysModCount         string `json:"sys_mod_count,omitempty"`
-			SerialNumber        string `json:"serial_number,omitempty"`
-			Monitor             string `json:"monitor,omitempty"`
-			ModelId             string `json:"model_id,omitempty"`
-			IpAddress           string `json:"ip_address,omitempty"`
-			DuplicateOf         string `json:"duplicate_of,omitempty"`
-			SysTags             string `json:"sys_tags,omitempty"`
-			CostCc              string `json:"cost_cc,omitempty"`
-			SupportGroup        string `json:"support_group,omitempty"`
-			OrderDate           string `json:"order_date,omitempty"`
-			Schedule            string `json:"schedule,omitempty"`
-			Due                 string `json:"due,omitempty"`
-			Unverified          string `json:"unverified,omitempty"`
-			CorrelationId       string `json:"correlation_id,omitempty"`
-			Attributes          string `json:"attributes,omitempty"`
-			Location            string `json:"location,omitempty"`
-			Asset               string `json:"asset,omitempty"`
-			Category            string `json:"category,omitempty"`
-			FaultCount          string `json:"fault_count,omitempty"`
-			LeaseId             string `json:"lease_id,omitempty"`
+			AttestedDate         string `json:"attested_date,omitempty"`
+			SkipSync             string `json:"skip_sync,omitempty"`
+			OperationalStatus    string `json:"operational_status,omitempty"`
+			SysUpdatedOn         string `json:"sys_updated_on,omitempty"`
+			AttestationScore     string `json:"attestation_score,omitempty"`
+			DiscoverySource      string `json:"discovery_source,omitempty"`
+			FirstDiscovered      string `json:"first_discovered,omitempty"`
+			SysUpdatedBy         string `json:"sys_updated_by,omitempty"`
+			DueIn                string `json:"due_in,omitempty"`
+			SysCreatedOn         string `json:"sys_created_on,omitempty"`
+			InstallDate          string `json:"install_date,omitempty"`
+			InvoiceNumber        string `json:"invoice_number,omitempty"`
+			GlAccount            string `json:"gl_account,omitempty"`
+			SysCreatedBy         string `json:"sys_created_by,omitempty"`
+			WarrantyExpiration   string `json:"warranty_expiration,omitempty"`
+			AssetTag             string `json:"asset_tag,omitempty"`
+			Fqdn                 string `json:"fqdn,omitempty"`
+			ChangeControl        string `json:"change_control,omitempty"`
+			OwnedBy              string `json:"owned_by,omitempty"`
+			CheckedOut           string `json:"checked_out,omitempty"`
+			SysDomainPath        string `json:"sys_domain_path,omitempty"`
+			BusinessUnit         string `json:"business_unit,omitempty"`
+			DeliveryDate         string `json:"delivery_date,omitempty"`
+			MaintenanceSchedule  string `json:"maintenance_schedule,omitempty"`
+			InstallStatus        string `json:"install_status,omitempty"`
+			CostCenter           string `json:"cost_center,omitempty"`
+			AttestedBy           string `json:"attested_by,omitempty"`
+			SupportedBy          string `json:"supported_by,omitempty"`
+			DnsDomain            string `json:"dns_domain,omitempty"`
+			Name                 string `json:"name,omitempty"`
+			Assigned             string `json:"assigned,omitempty"`
+			PurchaseDate         string `json:"purchase_date,omitempty"`
+			Subcategory          string `json:"subcategory,omitempty"`
+			LifeCycleStage       string `json:"life_cycle_stage,omitempty"`
+			ShortDescription     string `json:"short_description,omitempty"`
+			AssignmentGroup      string `json:"assignment_group,omitempty"`
+			ManagedBy            string `json:"managed_by,omitempty"`
+			ManagedByGroup       string `json:"managed_by_group,omitempty"`
+			LastDiscovered       string `json:"last_discovered,omitempty"`
+			CanPrint             string `json:"can_print,omitempty"`
+			Manufacturer         string `json:"manufacturer,omitempty"`
+			PoNumber             string `json:"po_number,omitempty"`
+			CheckedIn            string `json:"checked_in,omitempty"`
+			Vendor               string `json:"vendor,omitempty"`
+			LifeCycleStageStatus string `json:"life_cycle_stage_status,omitempty"`
+			MacAddress           string `json:"mac_address,omitempty"`
+			Company              string `json:"company,omitempty"`
+			ModelNumber          string `json:"model_number,omitempty"`
+			Justification        string `json:"justification,omitempty"`
+			Department           string `json:"department,omitempty"`
+			AssignedTo           string `json:"assigned_to,omitempty"`
+			StartDate            string `json:"start_date,omitempty"`
+			Cost                 string `json:"cost,omitempty"`
+			Comments             string `json:"comments,omitempty"`
+			AttestationStatus    string `json:"attestation_status,omitempty"`
+			CmdbOtEntity         string `json:"cmdb_ot_entity,omitempty"`
+			SysModCount          string `json:"sys_mod_count,omitempty"`
+			SerialNumber         string `json:"serial_number,omitempty"`
+			Monitor              string `json:"monitor,omitempty"`
+			ModelId              string `json:"model_id,omitempty"`
+			IpAddress            string `json:"ip_address,omitempty"`
+			DuplicateOf          string `json:"duplicate_of,omitempty"`
+			SysTags              string `json:"sys_tags,omitempty"`
+			CostCc               string `json:"cost_cc,omitempty"`
+			SupportGroup         string `json:"support_group,omitempty"`
+			OrderDate            string `json:"order_date,omitempty"`
+			Schedule             string `json:"schedule,omitempty"`
+			Environment          string `json:"environment,omitempty"`
+			Due                  string `json:"due,omitempty"`
+			Attested             string `json:"attested,omitempty"`
+			Unverified           string `json:"unverified,omitempty"`
+			CorrelationId        string `json:"correlation_id,omitempty"`
+			Attributes           string `json:"attributes,omitempty"`
+			Location             string `json:"location,omitempty"`
+			Asset                string `json:"asset,omitempty"`
+			Category             string `json:"category,omitempty"`
+			FaultCount           string `json:"fault_count,omitempty"`
+			LeaseId              string `json:"lease_id,omitempty"`
 		} `json:"attributes"`
 	} `json:"result"`
 }
@@ -107,13 +120,14 @@ type CmdbCiPost struct {
 // structure because it has to contain the "value", "link" and "display_value" fields for reference objects
 //
 // The generateprovidersource utility constructs this STRUCT from metadata pulled from ServiceNow.
-//
-type CmdbCiGet struct {
+type ConfigurationItemGet struct {
 	Result struct {
 		Attributes struct {
+			AttestedDate       string `json:"attested_date,omitempty"`
 			SkipSync           string `json:"skip_sync,omitempty"`
 			OperationalStatus  string `json:"operational_status,omitempty"`
 			SysUpdatedOn       string `json:"sys_updated_on,omitempty"`
+			AttestationScore   string `json:"attestation_score,omitempty"`
 			DiscoverySource    string `json:"discovery_source,omitempty"`
 			FirstDiscovered    string `json:"first_discovered,omitempty"`
 			SysUpdatedBy       string `json:"sys_updated_by,omitempty"`
@@ -136,8 +150,13 @@ type CmdbCiGet struct {
 				Link         string `json:"link,omitempty"`
 				DisplayValue string `json:"display_value,omitempty"`
 			} `json:"owned_by"`
-			CheckedOut          string `json:"checked_out,omitempty"`
-			SysDomainPath       string `json:"sys_domain_path,omitempty"`
+			CheckedOut    string `json:"checked_out,omitempty"`
+			SysDomainPath string `json:"sys_domain_path,omitempty"`
+			BusinessUnit  struct {
+				Value        string `json:"value,omitempty"`
+				Link         string `json:"link,omitempty"`
+				DisplayValue string `json:"display_value,omitempty"`
+			} `json:"business_unit"`
 			DeliveryDate        string `json:"delivery_date,omitempty"`
 			MaintenanceSchedule struct {
 				Value        string `json:"value,omitempty"`
@@ -150,16 +169,26 @@ type CmdbCiGet struct {
 				Link         string `json:"link,omitempty"`
 				DisplayValue string `json:"display_value,omitempty"`
 			} `json:"cost_center"`
+			AttestedBy struct {
+				Value        string `json:"value,omitempty"`
+				Link         string `json:"link,omitempty"`
+				DisplayValue string `json:"display_value,omitempty"`
+			} `json:"attested_by"`
 			SupportedBy struct {
 				Value        string `json:"value,omitempty"`
 				Link         string `json:"link,omitempty"`
 				DisplayValue string `json:"display_value,omitempty"`
 			} `json:"supported_by"`
-			DnsDomain        string `json:"dns_domain,omitempty"`
-			Name             string `json:"name,omitempty"`
-			Assigned         string `json:"assigned,omitempty"`
-			PurchaseDate     string `json:"purchase_date,omitempty"`
-			Subcategory      string `json:"subcategory,omitempty"`
+			DnsDomain      string `json:"dns_domain,omitempty"`
+			Name           string `json:"name,omitempty"`
+			Assigned       string `json:"assigned,omitempty"`
+			PurchaseDate   string `json:"purchase_date,omitempty"`
+			Subcategory    string `json:"subcategory,omitempty"`
+			LifeCycleStage struct {
+				Value        string `json:"value,omitempty"`
+				Link         string `json:"link,omitempty"`
+				DisplayValue string `json:"display_value,omitempty"`
+			} `json:"life_cycle_stage"`
 			ShortDescription string `json:"short_description,omitempty"`
 			AssignmentGroup  struct {
 				Value        string `json:"value,omitempty"`
@@ -171,6 +200,11 @@ type CmdbCiGet struct {
 				Link         string `json:"link,omitempty"`
 				DisplayValue string `json:"display_value,omitempty"`
 			} `json:"managed_by"`
+			ManagedByGroup struct {
+				Value        string `json:"value,omitempty"`
+				Link         string `json:"link,omitempty"`
+				DisplayValue string `json:"display_value,omitempty"`
+			} `json:"managed_by_group"`
 			LastDiscovered string `json:"last_discovered,omitempty"`
 			CanPrint       string `json:"can_print,omitempty"`
 			Manufacturer   struct {
@@ -185,6 +219,11 @@ type CmdbCiGet struct {
 				Link         string `json:"link,omitempty"`
 				DisplayValue string `json:"display_value,omitempty"`
 			} `json:"vendor"`
+			LifeCycleStageStatus struct {
+				Value        string `json:"value,omitempty"`
+				Link         string `json:"link,omitempty"`
+				DisplayValue string `json:"display_value,omitempty"`
+			} `json:"life_cycle_stage_status"`
 			MacAddress string `json:"mac_address,omitempty"`
 			Company    struct {
 				Value        string `json:"value,omitempty"`
@@ -203,9 +242,15 @@ type CmdbCiGet struct {
 				Link         string `json:"link,omitempty"`
 				DisplayValue string `json:"display_value,omitempty"`
 			} `json:"assigned_to"`
-			StartDate    string `json:"start_date,omitempty"`
-			Cost         string `json:"cost,omitempty"`
-			Comments     string `json:"comments,omitempty"`
+			StartDate         string `json:"start_date,omitempty"`
+			Cost              string `json:"cost,omitempty"`
+			Comments          string `json:"comments,omitempty"`
+			AttestationStatus string `json:"attestation_status,omitempty"`
+			CmdbOtEntity      struct {
+				Value        string `json:"value,omitempty"`
+				Link         string `json:"link,omitempty"`
+				DisplayValue string `json:"display_value,omitempty"`
+			} `json:"cmdb_ot_entity"`
 			SysModCount  string `json:"sys_mod_count,omitempty"`
 			SerialNumber string `json:"serial_number,omitempty"`
 			Monitor      string `json:"monitor,omitempty"`
@@ -233,7 +278,9 @@ type CmdbCiGet struct {
 				Link         string `json:"link,omitempty"`
 				DisplayValue string `json:"display_value,omitempty"`
 			} `json:"schedule"`
+			Environment   string `json:"environment,omitempty"`
 			Due           string `json:"due,omitempty"`
+			Attested      string `json:"attested,omitempty"`
 			Unverified    string `json:"unverified,omitempty"`
 			CorrelationId string `json:"correlation_id,omitempty"`
 			Attributes    string `json:"attributes,omitempty"`
@@ -270,30 +317,37 @@ type CmdbCiGet struct {
 //       requirements for managing attributes and provides a method for setting these switches for
 //       custom attributes.
 
-func ResourceCmdbCi() *schema.Resource {
+func ResourceConfigurationItem() *schema.Resource {
 	return &schema.Resource{
-		Create: createResourceCmdbCi,
-		Read:   readResourceCmdbCi,
-		Update: updateResourceCmdbCi,
-		Delete: deleteResourceCmdbCi,
+		CreateContext: createResourceConfigurationItem,
+		ReadContext:   readResourceConfigurationItem,
+		UpdateContext: updateResourceConfigurationItem,
+		DeleteContext: deleteResourceConfigurationItem,
 
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
 		},
 
 		Schema: map[string]*schema.Schema{
+			"attested_date": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
 			"skip_sync": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
 			"operational_status": {
 				Type:     schema.TypeString,
-				Computed: true,
 				Optional: true,
 			},
 			"sys_updated_on": {
 				Type:     schema.TypeString,
 				Computed: true,
+			},
+			"attestation_score": {
+				Type:     schema.TypeString,
+				Optional: true,
 			},
 			"discovery_source": {
 				Type:     schema.TypeString,
@@ -346,6 +400,7 @@ func ResourceCmdbCi() *schema.Resource {
 			"change_control": {
 				Type:     schema.TypeMap,
 				Optional: true,
+				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"display_value": {
@@ -366,6 +421,7 @@ func ResourceCmdbCi() *schema.Resource {
 			"owned_by": {
 				Type:     schema.TypeMap,
 				Optional: true,
+				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"display_value": {
@@ -391,6 +447,27 @@ func ResourceCmdbCi() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
+			"business_unit": {
+				Type:     schema.TypeMap,
+				Optional: true,
+				Computed: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"display_value": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"value": {
+							Type:     schema.TypeString,
+							Optional: true,
+						},
+						"link": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+					},
+				},
+			},
 			"delivery_date": {
 				Type:     schema.TypeString,
 				Computed: true,
@@ -398,6 +475,7 @@ func ResourceCmdbCi() *schema.Resource {
 			"maintenance_schedule": {
 				Type:     schema.TypeMap,
 				Optional: true,
+				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"display_value": {
@@ -422,6 +500,28 @@ func ResourceCmdbCi() *schema.Resource {
 			"cost_center": {
 				Type:     schema.TypeMap,
 				Optional: true,
+				Computed: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"display_value": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"value": {
+							Type:     schema.TypeString,
+							Optional: true,
+						},
+						"link": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+					},
+				},
+			},
+			"attested_by": {
+				Type:     schema.TypeMap,
+				Optional: true,
+				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"display_value": {
@@ -442,6 +542,7 @@ func ResourceCmdbCi() *schema.Resource {
 			"supported_by": {
 				Type:     schema.TypeMap,
 				Optional: true,
+				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"display_value": {
@@ -479,6 +580,27 @@ func ResourceCmdbCi() *schema.Resource {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
+			"life_cycle_stage": {
+				Type:     schema.TypeMap,
+				Optional: true,
+				Computed: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"display_value": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"value": {
+							Type:     schema.TypeString,
+							Optional: true,
+						},
+						"link": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+					},
+				},
+			},
 			"short_description": {
 				Type:     schema.TypeString,
 				Optional: true,
@@ -486,6 +608,7 @@ func ResourceCmdbCi() *schema.Resource {
 			"assignment_group": {
 				Type:     schema.TypeMap,
 				Optional: true,
+				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"display_value": {
@@ -506,6 +629,28 @@ func ResourceCmdbCi() *schema.Resource {
 			"managed_by": {
 				Type:     schema.TypeMap,
 				Optional: true,
+				Computed: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"display_value": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"value": {
+							Type:     schema.TypeString,
+							Optional: true,
+						},
+						"link": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+					},
+				},
+			},
+			"managed_by_group": {
+				Type:     schema.TypeMap,
+				Optional: true,
+				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"display_value": {
@@ -534,6 +679,7 @@ func ResourceCmdbCi() *schema.Resource {
 			"manufacturer": {
 				Type:     schema.TypeMap,
 				Optional: true,
+				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"display_value": {
@@ -562,6 +708,28 @@ func ResourceCmdbCi() *schema.Resource {
 			"vendor": {
 				Type:     schema.TypeMap,
 				Optional: true,
+				Computed: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"display_value": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"value": {
+							Type:     schema.TypeString,
+							Optional: true,
+						},
+						"link": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+					},
+				},
+			},
+			"life_cycle_stage_status": {
+				Type:     schema.TypeMap,
+				Optional: true,
+				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"display_value": {
@@ -586,6 +754,7 @@ func ResourceCmdbCi() *schema.Resource {
 			"company": {
 				Type:     schema.TypeMap,
 				Optional: true,
+				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"display_value": {
@@ -614,6 +783,7 @@ func ResourceCmdbCi() *schema.Resource {
 			"department": {
 				Type:     schema.TypeMap,
 				Optional: true,
+				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"display_value": {
@@ -634,6 +804,7 @@ func ResourceCmdbCi() *schema.Resource {
 			"assigned_to": {
 				Type:     schema.TypeMap,
 				Optional: true,
+				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"display_value": {
@@ -663,6 +834,31 @@ func ResourceCmdbCi() *schema.Resource {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
+			"attestation_status": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
+			"cmdb_ot_entity": {
+				Type:     schema.TypeMap,
+				Optional: true,
+				Computed: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"display_value": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"value": {
+							Type:     schema.TypeString,
+							Optional: true,
+						},
+						"link": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+					},
+				},
+			},
 			"sys_mod_count": {
 				Type:     schema.TypeString,
 				Computed: true,
@@ -673,11 +869,12 @@ func ResourceCmdbCi() *schema.Resource {
 			},
 			"monitor": {
 				Type:     schema.TypeString,
-				Optional: true,
+				Optional: true, Default: "false",
 			},
 			"model_id": {
 				Type:     schema.TypeMap,
 				Optional: true,
+				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"display_value": {
@@ -702,6 +899,7 @@ func ResourceCmdbCi() *schema.Resource {
 			"duplicate_of": {
 				Type:     schema.TypeMap,
 				Optional: true,
+				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"display_value": {
@@ -730,6 +928,7 @@ func ResourceCmdbCi() *schema.Resource {
 			"support_group": {
 				Type:     schema.TypeMap,
 				Optional: true,
+				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"display_value": {
@@ -754,6 +953,7 @@ func ResourceCmdbCi() *schema.Resource {
 			"schedule": {
 				Type:     schema.TypeMap,
 				Optional: true,
+				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"display_value": {
@@ -771,9 +971,17 @@ func ResourceCmdbCi() *schema.Resource {
 					},
 				},
 			},
+			"environment": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
 			"due": {
 				Type:     schema.TypeString,
 				Computed: true,
+			},
+			"attested": {
+				Type:     schema.TypeString,
+				Optional: true,
 			},
 			"unverified": {
 				Type:     schema.TypeString,
@@ -790,6 +998,7 @@ func ResourceCmdbCi() *schema.Resource {
 			"location": {
 				Type:     schema.TypeMap,
 				Optional: true,
+				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"display_value": {
@@ -810,6 +1019,7 @@ func ResourceCmdbCi() *schema.Resource {
 			"asset": {
 				Type:     schema.TypeMap,
 				Optional: true,
+				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"display_value": {
@@ -843,15 +1053,14 @@ func ResourceCmdbCi() *schema.Resource {
 	}
 }
 
-//  Create routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
-//
-func createResourceCmdbCi(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
+// Create routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
+func createResourceConfigurationItem(ctx context.Context, resourceData *schema.ResourceData, serviceNowClient interface{}) diag.Diagnostics {
 
 	servicenowClient := serviceNowClient.(*Client) //Client Connection details
 	// Use common function to update base attributes
-	var ci CmdbCiPost
-	if err := copyFromTerraformToServiceNowCmdbCi(resourceData, &ci); err != nil {
-		return err
+	var ci ConfigurationItemPost
+	if err := copyFromTerraformToServiceNowConfigurationItem(resourceData, &ci); err != nil {
+		return diag.FromErr(err)
 	}
 
 	//t := time.Now()
@@ -864,16 +1073,15 @@ func createResourceCmdbCi(resourceData *schema.ResourceData, serviceNowClient in
 	jsonData, err := servicenowClient.RequestJSON("POST", SnowUrl, ci.Result)
 	if err != nil {
 		resourceData.SetId("")
-		return err
+		return diag.FromErr(err)
 	}
 
 	resourceData.SetId(GetSysId(jsonData))
-	return readResourceCmdbCi(resourceData, serviceNowClient)
+	return readResourceConfigurationItem(ctx, resourceData, serviceNowClient)
 }
 
-//  Read routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
-//
-func readResourceCmdbCi(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
+// Read routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
+func readResourceConfigurationItem(ctx context.Context, resourceData *schema.ResourceData, serviceNowClient interface{}) diag.Diagnostics {
 
 	servicenowClient := serviceNowClient.(*Client)
 	SnowUrl := CMDBInstanceApi + CiNamecmdb_ci + "/" + resourceData.Id()
@@ -881,24 +1089,23 @@ func readResourceCmdbCi(resourceData *schema.ResourceData, serviceNowClient inte
 	jsonData, err := servicenowClient.RequestJSON("GET", SnowUrl, nil)
 	if err != nil {
 		resourceData.SetId("")
-		return err
+		return diag.FromErr(err)
 	}
 
-	if err := copyFromServiceNowToTerraformCmdbCi(resourceData, jsonData); err != nil {
-		return err
+	if err := copyFromServiceNowToTerraformConfigurationItem(resourceData, jsonData); err != nil {
+		return diag.FromErr(err)
 	}
 
 	return nil
 }
 
-//  Update routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
-//
-func updateResourceCmdbCi(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
+// Update routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
+func updateResourceConfigurationItem(ctx context.Context, resourceData *schema.ResourceData, serviceNowClient interface{}) diag.Diagnostics {
 	servicenowClient := serviceNowClient.(*Client)
 
-	var ci CmdbCiPost
-	if err := copyFromTerraformToServiceNowCmdbCi(resourceData, &ci); err != nil {
-		return err
+	var ci ConfigurationItemPost
+	if err := copyFromTerraformToServiceNowConfigurationItem(resourceData, &ci); err != nil {
+		return diag.FromErr(err)
 	}
 
 	SnowUrl := CMDBInstanceApi + CiNamecmdb_ci + "/" + resourceData.Id()
@@ -906,9 +1113,9 @@ func updateResourceCmdbCi(resourceData *schema.ResourceData, serviceNowClient in
 	_, err := servicenowClient.RequestJSON("PATCH", SnowUrl, ci.Result)
 	if err != nil {
 		resourceData.SetId("")
-		return err
+		return diag.FromErr(err)
 	}
-	return readResourceCmdbCi(resourceData, serviceNowClient)
+	return readResourceConfigurationItem(ctx, resourceData, serviceNowClient)
 }
 
 // TODO:  Need to work out what to do with deleting CIs. ServiceNow does not support deleting CIs via the API
@@ -916,40 +1123,48 @@ func updateResourceCmdbCi(resourceData *schema.ResourceData, serviceNowClient in
 //        (eg changes and incidents).  Therefore the best practice is to change their operational and
 //        install status.  The tricky bit is working out how to make this flexible for everyone to use.
 
-//  Delete routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
-//
-func deleteResourceCmdbCi(resourceData *schema.ResourceData, serviceNowClient interface{}) error {
+// Delete routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
+func deleteResourceConfigurationItem(ctx context.Context, resourceData *schema.ResourceData, serviceNowClient interface{}) diag.Diagnostics {
 
-	servicenowClient := serviceNowClient.(*Client)
-	var ci CmdbCiPost
-	if err := copyFromTerraformToServiceNowCmdbCi(resourceData, &ci); err != nil {
-		//return err
+	//servicenowClient := serviceNowClient.(*Client)
+	var ci ConfigurationItemPost
+	if err := copyFromTerraformToServiceNowConfigurationItem(resourceData, &ci); err != nil {
+		return diag.FromErr(err)
 	}
 
 	if err := resourceData.Set("install_status", "7"); err != nil {
-		//return fmt.Errorf("CmdbCifailed to set install_status field during destroy action %s", err)
+		//return fmt.Errorf("ConfigurationItemfailed to set install_status field during destroy action %s", err)
+		diag.FromErr(err)
 	}
 
-	SnowUrl := CMDBInstanceApi + CiNamecmdb_ci + "/" + resourceData.Id()
+	if err := resourceData.Set("operational_status", "6"); err != nil {
+		//return fmt.Errorf("ConfigurationItemfailed to set install_status field during destroy action %s", err)
+		diag.FromErr(err)
+	}
+	//SnowUrl := CMDBInstanceApi + CiNamecmdb_ci + "/" + resourceData.Id()
 	//jsonData, err := servicenowClient.RequestJSON("PATCH", SnowUrl, ci.Result)
-	_, err := servicenowClient.RequestJSON("PATCH", SnowUrl, ci.Result)
-	if err != nil {
-		resourceData.SetId("")
+	//_, err := servicenowClient.RequestJSON("PATCH", SnowUrl, ci.Result)
+	if err := updateResourceConfigurationItem(ctx, resourceData, serviceNowClient); err != nil {
 		return err
 	}
+	//if err != nil {
+	//resourceData.SetId("")
+	//return err
+	//}
 	return nil
 }
 
 // This routine is called to copy data from the Terraform schema.ResourceData object into the CMDB CI object
 // It would be nice if Terraform implemented a funciton to return a list of field names in a slice, this would
 // make it easier to loop through the structure instead of doing a "Get" per field.
-//
-func copyFromTerraformToServiceNowCmdbCi(resourceData *schema.ResourceData, ci *CmdbCiPost) error {
+func copyFromTerraformToServiceNowConfigurationItem(resourceData *schema.ResourceData, ci *ConfigurationItemPost) error {
 
 	attrs := &ci.Result.Attributes
+	attrs.AttestedDate = resourceData.Get("attested_date").(string)
 	attrs.SkipSync = resourceData.Get("skip_sync").(string)
 	attrs.OperationalStatus = resourceData.Get("operational_status").(string)
 	attrs.SysUpdatedOn = resourceData.Get("sys_updated_on").(string)
+	attrs.AttestationScore = resourceData.Get("attestation_score").(string)
 	attrs.DiscoverySource = resourceData.Get("discovery_source").(string)
 	attrs.FirstDiscovered = resourceData.Get("first_discovered").(string)
 	attrs.SysUpdatedBy = resourceData.Get("sys_updated_by").(string)
@@ -966,25 +1181,30 @@ func copyFromTerraformToServiceNowCmdbCi(resourceData *schema.ResourceData, ci *
 	attrs.OwnedBy = resourceData.Get("owned_by.value").(string)
 	attrs.CheckedOut = resourceData.Get("checked_out").(string)
 	attrs.SysDomainPath = resourceData.Get("sys_domain_path").(string)
+	attrs.BusinessUnit = resourceData.Get("business_unit.value").(string)
 	attrs.DeliveryDate = resourceData.Get("delivery_date").(string)
 	attrs.MaintenanceSchedule = resourceData.Get("maintenance_schedule.value").(string)
 	attrs.InstallStatus = resourceData.Get("install_status").(string)
 	attrs.CostCenter = resourceData.Get("cost_center.value").(string)
+	attrs.AttestedBy = resourceData.Get("attested_by.value").(string)
 	attrs.SupportedBy = resourceData.Get("supported_by.value").(string)
 	attrs.DnsDomain = resourceData.Get("dns_domain").(string)
 	attrs.Name = resourceData.Get("name").(string)
 	attrs.Assigned = resourceData.Get("assigned").(string)
 	attrs.PurchaseDate = resourceData.Get("purchase_date").(string)
 	attrs.Subcategory = resourceData.Get("subcategory").(string)
+	attrs.LifeCycleStage = resourceData.Get("life_cycle_stage.value").(string)
 	attrs.ShortDescription = resourceData.Get("short_description").(string)
 	attrs.AssignmentGroup = resourceData.Get("assignment_group.value").(string)
 	attrs.ManagedBy = resourceData.Get("managed_by.value").(string)
+	attrs.ManagedByGroup = resourceData.Get("managed_by_group.value").(string)
 	attrs.LastDiscovered = resourceData.Get("last_discovered").(string)
 	attrs.CanPrint = resourceData.Get("can_print").(string)
 	attrs.Manufacturer = resourceData.Get("manufacturer.value").(string)
 	attrs.PoNumber = resourceData.Get("po_number").(string)
 	attrs.CheckedIn = resourceData.Get("checked_in").(string)
 	attrs.Vendor = resourceData.Get("vendor.value").(string)
+	attrs.LifeCycleStageStatus = resourceData.Get("life_cycle_stage_status.value").(string)
 	attrs.MacAddress = resourceData.Get("mac_address").(string)
 	attrs.Company = resourceData.Get("company.value").(string)
 	attrs.ModelNumber = resourceData.Get("model_number").(string)
@@ -994,6 +1214,8 @@ func copyFromTerraformToServiceNowCmdbCi(resourceData *schema.ResourceData, ci *
 	attrs.StartDate = resourceData.Get("start_date").(string)
 	attrs.Cost = resourceData.Get("cost").(string)
 	attrs.Comments = resourceData.Get("comments").(string)
+	attrs.AttestationStatus = resourceData.Get("attestation_status").(string)
+	attrs.CmdbOtEntity = resourceData.Get("cmdb_ot_entity.value").(string)
 	attrs.SysModCount = resourceData.Get("sys_mod_count").(string)
 	attrs.SerialNumber = resourceData.Get("serial_number").(string)
 	attrs.Monitor = resourceData.Get("monitor").(string)
@@ -1005,7 +1227,9 @@ func copyFromTerraformToServiceNowCmdbCi(resourceData *schema.ResourceData, ci *
 	attrs.SupportGroup = resourceData.Get("support_group.value").(string)
 	attrs.OrderDate = resourceData.Get("order_date").(string)
 	attrs.Schedule = resourceData.Get("schedule.value").(string)
+	attrs.Environment = resourceData.Get("environment").(string)
 	attrs.Due = resourceData.Get("due").(string)
+	attrs.Attested = resourceData.Get("attested").(string)
 	attrs.Unverified = resourceData.Get("unverified").(string)
 	attrs.CorrelationId = resourceData.Get("correlation_id").(string)
 	attrs.Attributes = resourceData.Get("attributes").(string)
@@ -1021,11 +1245,11 @@ func copyFromTerraformToServiceNowCmdbCi(resourceData *schema.ResourceData, ci *
 // Sets each field in the Terraform schema.ResourceData object with the corrsponding field from the CI STRUCT.
 //
 // NOTE:  Terraform expects a MAP for fields that represent "reference fields" so that the "value", "link" and
-//        "display_value" are decoded correctly by Terraform.  The map is constructed for each reference field
-//        using a common function called "StructToMap" in the "client_base.go" file.
 //
-func copyFromServiceNowToTerraformCmdbCi(resourceData *schema.ResourceData, jsonData []byte) error {
-	ci := CmdbCiGet{}
+//	"display_value" are decoded correctly by Terraform.  The map is constructed for each reference field
+//	using a common function called "StructToMap" in the "client_base.go" file.
+func copyFromServiceNowToTerraformConfigurationItem(resourceData *schema.ResourceData, jsonData []byte) error {
+	ci := ConfigurationItemGet{}
 	if err := json.Unmarshal(jsonData, &ci); err != nil {
 		//resourceData.SetId("")
 		//return err
@@ -1033,9 +1257,11 @@ func copyFromServiceNowToTerraformCmdbCi(resourceData *schema.ResourceData, json
 
 	resourceData.SetId(GetSysId(jsonData))
 	attrs := ci.Result.Attributes
+	_ = resourceData.Set("attested_date", attrs.AttestedDate)
 	_ = resourceData.Set("skip_sync", attrs.SkipSync)
 	_ = resourceData.Set("operational_status", attrs.OperationalStatus)
 	_ = resourceData.Set("sys_updated_on", attrs.SysUpdatedOn)
+	_ = resourceData.Set("attestation_score", attrs.AttestationScore)
 	_ = resourceData.Set("discovery_source", attrs.DiscoverySource)
 	_ = resourceData.Set("first_discovered", attrs.FirstDiscovered)
 	_ = resourceData.Set("sys_updated_by", attrs.SysUpdatedBy)
@@ -1052,25 +1278,30 @@ func copyFromServiceNowToTerraformCmdbCi(resourceData *schema.ResourceData, json
 	_ = resourceData.Set("owned_by", StructToMap(attrs.OwnedBy))
 	_ = resourceData.Set("checked_out", attrs.CheckedOut)
 	_ = resourceData.Set("sys_domain_path", attrs.SysDomainPath)
+	_ = resourceData.Set("business_unit", StructToMap(attrs.BusinessUnit))
 	_ = resourceData.Set("delivery_date", attrs.DeliveryDate)
 	_ = resourceData.Set("maintenance_schedule", StructToMap(attrs.MaintenanceSchedule))
 	_ = resourceData.Set("install_status", attrs.InstallStatus)
 	_ = resourceData.Set("cost_center", StructToMap(attrs.CostCenter))
+	_ = resourceData.Set("attested_by", StructToMap(attrs.AttestedBy))
 	_ = resourceData.Set("supported_by", StructToMap(attrs.SupportedBy))
 	_ = resourceData.Set("dns_domain", attrs.DnsDomain)
 	_ = resourceData.Set("name", attrs.Name)
 	_ = resourceData.Set("assigned", attrs.Assigned)
 	_ = resourceData.Set("purchase_date", attrs.PurchaseDate)
 	_ = resourceData.Set("subcategory", attrs.Subcategory)
+	_ = resourceData.Set("life_cycle_stage", StructToMap(attrs.LifeCycleStage))
 	_ = resourceData.Set("short_description", attrs.ShortDescription)
 	_ = resourceData.Set("assignment_group", StructToMap(attrs.AssignmentGroup))
 	_ = resourceData.Set("managed_by", StructToMap(attrs.ManagedBy))
+	_ = resourceData.Set("managed_by_group", StructToMap(attrs.ManagedByGroup))
 	_ = resourceData.Set("last_discovered", attrs.LastDiscovered)
 	_ = resourceData.Set("can_print", attrs.CanPrint)
 	_ = resourceData.Set("manufacturer", StructToMap(attrs.Manufacturer))
 	_ = resourceData.Set("po_number", attrs.PoNumber)
 	_ = resourceData.Set("checked_in", attrs.CheckedIn)
 	_ = resourceData.Set("vendor", StructToMap(attrs.Vendor))
+	_ = resourceData.Set("life_cycle_stage_status", StructToMap(attrs.LifeCycleStageStatus))
 	_ = resourceData.Set("mac_address", attrs.MacAddress)
 	_ = resourceData.Set("company", StructToMap(attrs.Company))
 	_ = resourceData.Set("model_number", attrs.ModelNumber)
@@ -1080,6 +1311,8 @@ func copyFromServiceNowToTerraformCmdbCi(resourceData *schema.ResourceData, json
 	_ = resourceData.Set("start_date", attrs.StartDate)
 	_ = resourceData.Set("cost", attrs.Cost)
 	_ = resourceData.Set("comments", attrs.Comments)
+	_ = resourceData.Set("attestation_status", attrs.AttestationStatus)
+	_ = resourceData.Set("cmdb_ot_entity", StructToMap(attrs.CmdbOtEntity))
 	_ = resourceData.Set("sys_mod_count", attrs.SysModCount)
 	_ = resourceData.Set("serial_number", attrs.SerialNumber)
 	_ = resourceData.Set("monitor", attrs.Monitor)
@@ -1091,7 +1324,9 @@ func copyFromServiceNowToTerraformCmdbCi(resourceData *schema.ResourceData, json
 	_ = resourceData.Set("support_group", StructToMap(attrs.SupportGroup))
 	_ = resourceData.Set("order_date", attrs.OrderDate)
 	_ = resourceData.Set("schedule", StructToMap(attrs.Schedule))
+	_ = resourceData.Set("environment", attrs.Environment)
 	_ = resourceData.Set("due", attrs.Due)
+	_ = resourceData.Set("attested", attrs.Attested)
 	_ = resourceData.Set("unverified", attrs.Unverified)
 	_ = resourceData.Set("correlation_id", attrs.CorrelationId)
 	_ = resourceData.Set("attributes", attrs.Attributes)
