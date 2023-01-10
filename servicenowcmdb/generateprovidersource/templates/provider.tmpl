@@ -2,6 +2,7 @@ package resources
 
 import (
 "context"
+"terraform-provider-servicenowcmdb/servicenowcmdb/client"
 "github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 "github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 //"github.com/hashicorp/terraform-plugin-sdk/terraform"
@@ -45,7 +46,7 @@ ConfigureContextFunc: configure,
 func configure(ctx context.Context,data *schema.ResourceData) (interface{}, diag.Diagnostics) {
 // Create a new client to talk to the instance.
 log.Printf("[DEBUG] In configure")
-servicenowClient := NewClient(
+servicenowClient := client.NewClient(
 data.Get("instance_url").(string),
 data.Get("username").(string),
 data.Get("password").(string))

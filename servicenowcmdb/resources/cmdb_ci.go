@@ -17,6 +17,7 @@ package resources
 import (
 	"context"
 	"encoding/json"
+	"terraform-provider-servicenowcmdb/servicenowcmdb/client"
 	//"fmt"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -398,14 +399,14 @@ func ResourceConfigurationItem() *schema.Resource {
 				Optional: true,
 			},
 			"change_control": {
-				Type:     schema.TypeMap,
+				Type:     schema.TypeList,
 				Optional: true,
 				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"display_value": {
 							Type:     schema.TypeString,
-							Computed: true,
+							Optional: true,
 						},
 						"value": {
 							Type:     schema.TypeString,
@@ -419,14 +420,14 @@ func ResourceConfigurationItem() *schema.Resource {
 				},
 			},
 			"owned_by": {
-				Type:     schema.TypeMap,
+				Type:     schema.TypeList,
 				Optional: true,
 				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"display_value": {
 							Type:     schema.TypeString,
-							Computed: true,
+							Optional: true,
 						},
 						"value": {
 							Type:     schema.TypeString,
@@ -445,17 +446,17 @@ func ResourceConfigurationItem() *schema.Resource {
 			},
 			"sys_domain_path": {
 				Type:     schema.TypeString,
-				Optional: true,
+				Optional: true, Default: "/",
 			},
 			"business_unit": {
-				Type:     schema.TypeMap,
+				Type:     schema.TypeList,
 				Optional: true,
 				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"display_value": {
 							Type:     schema.TypeString,
-							Computed: true,
+							Optional: true,
 						},
 						"value": {
 							Type:     schema.TypeString,
@@ -473,14 +474,14 @@ func ResourceConfigurationItem() *schema.Resource {
 				Computed: true,
 			},
 			"maintenance_schedule": {
-				Type:     schema.TypeMap,
+				Type:     schema.TypeList,
 				Optional: true,
 				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"display_value": {
 							Type:     schema.TypeString,
-							Computed: true,
+							Optional: true,
 						},
 						"value": {
 							Type:     schema.TypeString,
@@ -498,14 +499,14 @@ func ResourceConfigurationItem() *schema.Resource {
 				Optional: true,
 			},
 			"cost_center": {
-				Type:     schema.TypeMap,
+				Type:     schema.TypeList,
 				Optional: true,
 				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"display_value": {
 							Type:     schema.TypeString,
-							Computed: true,
+							Optional: true,
 						},
 						"value": {
 							Type:     schema.TypeString,
@@ -519,14 +520,14 @@ func ResourceConfigurationItem() *schema.Resource {
 				},
 			},
 			"attested_by": {
-				Type:     schema.TypeMap,
+				Type:     schema.TypeList,
 				Optional: true,
 				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"display_value": {
 							Type:     schema.TypeString,
-							Computed: true,
+							Optional: true,
 						},
 						"value": {
 							Type:     schema.TypeString,
@@ -540,14 +541,14 @@ func ResourceConfigurationItem() *schema.Resource {
 				},
 			},
 			"supported_by": {
-				Type:     schema.TypeMap,
+				Type:     schema.TypeList,
 				Optional: true,
 				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"display_value": {
 							Type:     schema.TypeString,
-							Computed: true,
+							Optional: true,
 						},
 						"value": {
 							Type:     schema.TypeString,
@@ -581,14 +582,14 @@ func ResourceConfigurationItem() *schema.Resource {
 				Computed: true,
 			},
 			"life_cycle_stage": {
-				Type:     schema.TypeMap,
+				Type:     schema.TypeList,
 				Optional: true,
 				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"display_value": {
 							Type:     schema.TypeString,
-							Computed: true,
+							Optional: true,
 						},
 						"value": {
 							Type:     schema.TypeString,
@@ -606,14 +607,14 @@ func ResourceConfigurationItem() *schema.Resource {
 				Optional: true,
 			},
 			"assignment_group": {
-				Type:     schema.TypeMap,
+				Type:     schema.TypeList,
 				Optional: true,
 				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"display_value": {
 							Type:     schema.TypeString,
-							Computed: true,
+							Optional: true,
 						},
 						"value": {
 							Type:     schema.TypeString,
@@ -627,14 +628,14 @@ func ResourceConfigurationItem() *schema.Resource {
 				},
 			},
 			"managed_by": {
-				Type:     schema.TypeMap,
+				Type:     schema.TypeList,
 				Optional: true,
 				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"display_value": {
 							Type:     schema.TypeString,
-							Computed: true,
+							Optional: true,
 						},
 						"value": {
 							Type:     schema.TypeString,
@@ -648,14 +649,14 @@ func ResourceConfigurationItem() *schema.Resource {
 				},
 			},
 			"managed_by_group": {
-				Type:     schema.TypeMap,
+				Type:     schema.TypeList,
 				Optional: true,
 				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"display_value": {
 							Type:     schema.TypeString,
-							Computed: true,
+							Optional: true,
 						},
 						"value": {
 							Type:     schema.TypeString,
@@ -677,14 +678,14 @@ func ResourceConfigurationItem() *schema.Resource {
 				Computed: true,
 			},
 			"manufacturer": {
-				Type:     schema.TypeMap,
+				Type:     schema.TypeList,
 				Optional: true,
 				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"display_value": {
 							Type:     schema.TypeString,
-							Computed: true,
+							Optional: true,
 						},
 						"value": {
 							Type:     schema.TypeString,
@@ -706,14 +707,14 @@ func ResourceConfigurationItem() *schema.Resource {
 				Computed: true,
 			},
 			"vendor": {
-				Type:     schema.TypeMap,
+				Type:     schema.TypeList,
 				Optional: true,
 				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"display_value": {
 							Type:     schema.TypeString,
-							Computed: true,
+							Optional: true,
 						},
 						"value": {
 							Type:     schema.TypeString,
@@ -727,14 +728,14 @@ func ResourceConfigurationItem() *schema.Resource {
 				},
 			},
 			"life_cycle_stage_status": {
-				Type:     schema.TypeMap,
+				Type:     schema.TypeList,
 				Optional: true,
 				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"display_value": {
 							Type:     schema.TypeString,
-							Computed: true,
+							Optional: true,
 						},
 						"value": {
 							Type:     schema.TypeString,
@@ -752,14 +753,14 @@ func ResourceConfigurationItem() *schema.Resource {
 				Computed: true,
 			},
 			"company": {
-				Type:     schema.TypeMap,
+				Type:     schema.TypeList,
 				Optional: true,
 				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"display_value": {
 							Type:     schema.TypeString,
-							Computed: true,
+							Optional: true,
 						},
 						"value": {
 							Type:     schema.TypeString,
@@ -781,14 +782,14 @@ func ResourceConfigurationItem() *schema.Resource {
 				Optional: true,
 			},
 			"department": {
-				Type:     schema.TypeMap,
+				Type:     schema.TypeList,
 				Optional: true,
 				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"display_value": {
 							Type:     schema.TypeString,
-							Computed: true,
+							Optional: true,
 						},
 						"value": {
 							Type:     schema.TypeString,
@@ -802,14 +803,14 @@ func ResourceConfigurationItem() *schema.Resource {
 				},
 			},
 			"assigned_to": {
-				Type:     schema.TypeMap,
+				Type:     schema.TypeList,
 				Optional: true,
 				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"display_value": {
 							Type:     schema.TypeString,
-							Computed: true,
+							Optional: true,
 						},
 						"value": {
 							Type:     schema.TypeString,
@@ -836,17 +837,17 @@ func ResourceConfigurationItem() *schema.Resource {
 			},
 			"attestation_status": {
 				Type:     schema.TypeString,
-				Optional: true,
+				Optional: true, Default: "Not Yet Reviewed",
 			},
 			"cmdb_ot_entity": {
-				Type:     schema.TypeMap,
+				Type:     schema.TypeList,
 				Optional: true,
 				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"display_value": {
 							Type:     schema.TypeString,
-							Computed: true,
+							Optional: true,
 						},
 						"value": {
 							Type:     schema.TypeString,
@@ -872,14 +873,14 @@ func ResourceConfigurationItem() *schema.Resource {
 				Optional: true, Default: "false",
 			},
 			"model_id": {
-				Type:     schema.TypeMap,
+				Type:     schema.TypeList,
 				Optional: true,
 				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"display_value": {
 							Type:     schema.TypeString,
-							Computed: true,
+							Optional: true,
 						},
 						"value": {
 							Type:     schema.TypeString,
@@ -897,14 +898,14 @@ func ResourceConfigurationItem() *schema.Resource {
 				Optional: true,
 			},
 			"duplicate_of": {
-				Type:     schema.TypeMap,
+				Type:     schema.TypeList,
 				Optional: true,
 				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"display_value": {
 							Type:     schema.TypeString,
-							Computed: true,
+							Optional: true,
 						},
 						"value": {
 							Type:     schema.TypeString,
@@ -923,17 +924,17 @@ func ResourceConfigurationItem() *schema.Resource {
 			},
 			"cost_cc": {
 				Type:     schema.TypeString,
-				Optional: true,
+				Optional: true, Default: "USD",
 			},
 			"support_group": {
-				Type:     schema.TypeMap,
+				Type:     schema.TypeList,
 				Optional: true,
 				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"display_value": {
 							Type:     schema.TypeString,
-							Computed: true,
+							Optional: true,
 						},
 						"value": {
 							Type:     schema.TypeString,
@@ -951,14 +952,14 @@ func ResourceConfigurationItem() *schema.Resource {
 				Computed: true,
 			},
 			"schedule": {
-				Type:     schema.TypeMap,
+				Type:     schema.TypeList,
 				Optional: true,
 				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"display_value": {
 							Type:     schema.TypeString,
-							Computed: true,
+							Optional: true,
 						},
 						"value": {
 							Type:     schema.TypeString,
@@ -981,7 +982,7 @@ func ResourceConfigurationItem() *schema.Resource {
 			},
 			"attested": {
 				Type:     schema.TypeString,
-				Optional: true,
+				Optional: true, Default: "false",
 			},
 			"unverified": {
 				Type:     schema.TypeString,
@@ -996,14 +997,14 @@ func ResourceConfigurationItem() *schema.Resource {
 				Computed: true,
 			},
 			"location": {
-				Type:     schema.TypeMap,
+				Type:     schema.TypeList,
 				Optional: true,
 				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"display_value": {
 							Type:     schema.TypeString,
-							Computed: true,
+							Optional: true,
 						},
 						"value": {
 							Type:     schema.TypeString,
@@ -1017,14 +1018,14 @@ func ResourceConfigurationItem() *schema.Resource {
 				},
 			},
 			"asset": {
-				Type:     schema.TypeMap,
+				Type:     schema.TypeList,
 				Optional: true,
 				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"display_value": {
 							Type:     schema.TypeString,
-							Computed: true,
+							Optional: true,
 						},
 						"value": {
 							Type:     schema.TypeString,
@@ -1043,7 +1044,7 @@ func ResourceConfigurationItem() *schema.Resource {
 			},
 			"fault_count": {
 				Type:     schema.TypeString,
-				Optional: true,
+				Optional: true, Default: "0",
 			},
 			"lease_id": {
 				Type:     schema.TypeString,
@@ -1056,7 +1057,7 @@ func ResourceConfigurationItem() *schema.Resource {
 // Create routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
 func createResourceConfigurationItem(ctx context.Context, resourceData *schema.ResourceData, serviceNowClient interface{}) diag.Diagnostics {
 
-	servicenowClient := serviceNowClient.(*Client) //Client Connection details
+	servicenowClient := serviceNowClient.(*client.Client) //Client Connection details
 	// Use common function to update base attributes
 	var ci ConfigurationItemPost
 	if err := copyFromTerraformToServiceNowConfigurationItem(resourceData, &ci); err != nil {
@@ -1068,7 +1069,7 @@ func createResourceConfigurationItem(ctx context.Context, resourceData *schema.R
 	//ci.Result.Attributes.SysCreatedOn = t.String()
 
 	// Using "sysparm fields=sys_id" reduces the amount of data received, we only need the sys_id for create action
-	SnowUrl := CMDBInstanceApi + CiNamecmdb_ci + "?sysparm_fields=sys_id"
+	SnowUrl := client.CMDBInstanceApi + CiNamecmdb_ci + "?sysparm_fields=sys_id"
 
 	jsonData, err := servicenowClient.RequestJSON("POST", SnowUrl, ci.Result)
 	if err != nil {
@@ -1076,15 +1077,15 @@ func createResourceConfigurationItem(ctx context.Context, resourceData *schema.R
 		return diag.FromErr(err)
 	}
 
-	resourceData.SetId(GetSysId(jsonData))
+	resourceData.SetId(client.GetSysId(jsonData))
 	return readResourceConfigurationItem(ctx, resourceData, serviceNowClient)
 }
 
 // Read routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
 func readResourceConfigurationItem(ctx context.Context, resourceData *schema.ResourceData, serviceNowClient interface{}) diag.Diagnostics {
 
-	servicenowClient := serviceNowClient.(*Client)
-	SnowUrl := CMDBInstanceApi + CiNamecmdb_ci + "/" + resourceData.Id()
+	servicenowClient := serviceNowClient.(*client.Client)
+	SnowUrl := client.CMDBInstanceApi + CiNamecmdb_ci + "/" + resourceData.Id()
 	var jsonData []byte
 	jsonData, err := servicenowClient.RequestJSON("GET", SnowUrl, nil)
 	if err != nil {
@@ -1101,14 +1102,14 @@ func readResourceConfigurationItem(ctx context.Context, resourceData *schema.Res
 
 // Update routine - This function is called when Terraform wants to create a new CI in the ServiceNow CMDB
 func updateResourceConfigurationItem(ctx context.Context, resourceData *schema.ResourceData, serviceNowClient interface{}) diag.Diagnostics {
-	servicenowClient := serviceNowClient.(*Client)
+	servicenowClient := serviceNowClient.(*client.Client)
 
 	var ci ConfigurationItemPost
 	if err := copyFromTerraformToServiceNowConfigurationItem(resourceData, &ci); err != nil {
 		return diag.FromErr(err)
 	}
 
-	SnowUrl := CMDBInstanceApi + CiNamecmdb_ci + "/" + resourceData.Id()
+	SnowUrl := client.CMDBInstanceApi + CiNamecmdb_ci + "/" + resourceData.Id()
 	//jsonData, err := servicenowClient.RequestJSON("PATCH", SnowUrl, ci.Result)
 	_, err := servicenowClient.RequestJSON("PATCH", SnowUrl, ci.Result)
 	if err != nil {
@@ -1134,12 +1135,12 @@ func deleteResourceConfigurationItem(ctx context.Context, resourceData *schema.R
 
 	if err := resourceData.Set("install_status", "7"); err != nil {
 		//return fmt.Errorf("ConfigurationItemfailed to set install_status field during destroy action %s", err)
-		diag.FromErr(err)
+		return diag.FromErr(err)
 	}
 
 	if err := resourceData.Set("operational_status", "6"); err != nil {
 		//return fmt.Errorf("ConfigurationItemfailed to set install_status field during destroy action %s", err)
-		diag.FromErr(err)
+		return diag.FromErr(err)
 	}
 	//SnowUrl := CMDBInstanceApi + CiNamecmdb_ci + "/" + resourceData.Id()
 	//jsonData, err := servicenowClient.RequestJSON("PATCH", SnowUrl, ci.Result)
@@ -1177,64 +1178,88 @@ func copyFromTerraformToServiceNowConfigurationItem(resourceData *schema.Resourc
 	attrs.WarrantyExpiration = resourceData.Get("warranty_expiration").(string)
 	attrs.AssetTag = resourceData.Get("asset_tag").(string)
 	attrs.Fqdn = resourceData.Get("fqdn").(string)
-	attrs.ChangeControl = resourceData.Get("change_control.value").(string)
-	attrs.OwnedBy = resourceData.Get("owned_by.value").(string)
+	//attrs.ChangeControl  = resourceData.Get("change_control.value").(string)
+	attrs.ChangeControl = client.FlattenLinkRel("change_control", resourceData)
+	//attrs.OwnedBy  = resourceData.Get("owned_by.value").(string)
+	attrs.OwnedBy = client.FlattenLinkRel("owned_by", resourceData)
 	attrs.CheckedOut = resourceData.Get("checked_out").(string)
 	attrs.SysDomainPath = resourceData.Get("sys_domain_path").(string)
-	attrs.BusinessUnit = resourceData.Get("business_unit.value").(string)
+	//attrs.BusinessUnit  = resourceData.Get("business_unit.value").(string)
+	attrs.BusinessUnit = client.FlattenLinkRel("business_unit", resourceData)
 	attrs.DeliveryDate = resourceData.Get("delivery_date").(string)
-	attrs.MaintenanceSchedule = resourceData.Get("maintenance_schedule.value").(string)
+	//attrs.MaintenanceSchedule  = resourceData.Get("maintenance_schedule.value").(string)
+	attrs.MaintenanceSchedule = client.FlattenLinkRel("maintenance_schedule", resourceData)
 	attrs.InstallStatus = resourceData.Get("install_status").(string)
-	attrs.CostCenter = resourceData.Get("cost_center.value").(string)
-	attrs.AttestedBy = resourceData.Get("attested_by.value").(string)
-	attrs.SupportedBy = resourceData.Get("supported_by.value").(string)
+	//attrs.CostCenter  = resourceData.Get("cost_center.value").(string)
+	attrs.CostCenter = client.FlattenLinkRel("cost_center", resourceData)
+	//attrs.AttestedBy  = resourceData.Get("attested_by.value").(string)
+	attrs.AttestedBy = client.FlattenLinkRel("attested_by", resourceData)
+	//attrs.SupportedBy  = resourceData.Get("supported_by.value").(string)
+	attrs.SupportedBy = client.FlattenLinkRel("supported_by", resourceData)
 	attrs.DnsDomain = resourceData.Get("dns_domain").(string)
 	attrs.Name = resourceData.Get("name").(string)
 	attrs.Assigned = resourceData.Get("assigned").(string)
 	attrs.PurchaseDate = resourceData.Get("purchase_date").(string)
 	attrs.Subcategory = resourceData.Get("subcategory").(string)
-	attrs.LifeCycleStage = resourceData.Get("life_cycle_stage.value").(string)
+	//attrs.LifeCycleStage  = resourceData.Get("life_cycle_stage.value").(string)
+	attrs.LifeCycleStage = client.FlattenLinkRel("life_cycle_stage", resourceData)
 	attrs.ShortDescription = resourceData.Get("short_description").(string)
-	attrs.AssignmentGroup = resourceData.Get("assignment_group.value").(string)
-	attrs.ManagedBy = resourceData.Get("managed_by.value").(string)
-	attrs.ManagedByGroup = resourceData.Get("managed_by_group.value").(string)
+	//attrs.AssignmentGroup  = resourceData.Get("assignment_group.value").(string)
+	attrs.AssignmentGroup = client.FlattenLinkRel("assignment_group", resourceData)
+	//attrs.ManagedBy  = resourceData.Get("managed_by.value").(string)
+	attrs.ManagedBy = client.FlattenLinkRel("managed_by", resourceData)
+	//attrs.ManagedByGroup  = resourceData.Get("managed_by_group.value").(string)
+	attrs.ManagedByGroup = client.FlattenLinkRel("managed_by_group", resourceData)
 	attrs.LastDiscovered = resourceData.Get("last_discovered").(string)
 	attrs.CanPrint = resourceData.Get("can_print").(string)
-	attrs.Manufacturer = resourceData.Get("manufacturer.value").(string)
+	//attrs.Manufacturer  = resourceData.Get("manufacturer.value").(string)
+	attrs.Manufacturer = client.FlattenLinkRel("manufacturer", resourceData)
 	attrs.PoNumber = resourceData.Get("po_number").(string)
 	attrs.CheckedIn = resourceData.Get("checked_in").(string)
-	attrs.Vendor = resourceData.Get("vendor.value").(string)
-	attrs.LifeCycleStageStatus = resourceData.Get("life_cycle_stage_status.value").(string)
+	//attrs.Vendor  = resourceData.Get("vendor.value").(string)
+	attrs.Vendor = client.FlattenLinkRel("vendor", resourceData)
+	//attrs.LifeCycleStageStatus  = resourceData.Get("life_cycle_stage_status.value").(string)
+	attrs.LifeCycleStageStatus = client.FlattenLinkRel("life_cycle_stage_status", resourceData)
 	attrs.MacAddress = resourceData.Get("mac_address").(string)
-	attrs.Company = resourceData.Get("company.value").(string)
+	//attrs.Company  = resourceData.Get("company.value").(string)
+	attrs.Company = client.FlattenLinkRel("company", resourceData)
 	attrs.ModelNumber = resourceData.Get("model_number").(string)
 	attrs.Justification = resourceData.Get("justification").(string)
-	attrs.Department = resourceData.Get("department.value").(string)
-	attrs.AssignedTo = resourceData.Get("assigned_to.value").(string)
+	//attrs.Department  = resourceData.Get("department.value").(string)
+	attrs.Department = client.FlattenLinkRel("department", resourceData)
+	//attrs.AssignedTo  = resourceData.Get("assigned_to.value").(string)
+	attrs.AssignedTo = client.FlattenLinkRel("assigned_to", resourceData)
 	attrs.StartDate = resourceData.Get("start_date").(string)
 	attrs.Cost = resourceData.Get("cost").(string)
 	attrs.Comments = resourceData.Get("comments").(string)
 	attrs.AttestationStatus = resourceData.Get("attestation_status").(string)
-	attrs.CmdbOtEntity = resourceData.Get("cmdb_ot_entity.value").(string)
+	//attrs.CmdbOtEntity  = resourceData.Get("cmdb_ot_entity.value").(string)
+	attrs.CmdbOtEntity = client.FlattenLinkRel("cmdb_ot_entity", resourceData)
 	attrs.SysModCount = resourceData.Get("sys_mod_count").(string)
 	attrs.SerialNumber = resourceData.Get("serial_number").(string)
 	attrs.Monitor = resourceData.Get("monitor").(string)
-	attrs.ModelId = resourceData.Get("model_id.value").(string)
+	//attrs.ModelId  = resourceData.Get("model_id.value").(string)
+	attrs.ModelId = client.FlattenLinkRel("model_id", resourceData)
 	attrs.IpAddress = resourceData.Get("ip_address").(string)
-	attrs.DuplicateOf = resourceData.Get("duplicate_of.value").(string)
+	//attrs.DuplicateOf  = resourceData.Get("duplicate_of.value").(string)
+	attrs.DuplicateOf = client.FlattenLinkRel("duplicate_of", resourceData)
 	attrs.SysTags = resourceData.Get("sys_tags").(string)
 	attrs.CostCc = resourceData.Get("cost_cc").(string)
-	attrs.SupportGroup = resourceData.Get("support_group.value").(string)
+	//attrs.SupportGroup  = resourceData.Get("support_group.value").(string)
+	attrs.SupportGroup = client.FlattenLinkRel("support_group", resourceData)
 	attrs.OrderDate = resourceData.Get("order_date").(string)
-	attrs.Schedule = resourceData.Get("schedule.value").(string)
+	//attrs.Schedule  = resourceData.Get("schedule.value").(string)
+	attrs.Schedule = client.FlattenLinkRel("schedule", resourceData)
 	attrs.Environment = resourceData.Get("environment").(string)
 	attrs.Due = resourceData.Get("due").(string)
 	attrs.Attested = resourceData.Get("attested").(string)
 	attrs.Unverified = resourceData.Get("unverified").(string)
 	attrs.CorrelationId = resourceData.Get("correlation_id").(string)
 	attrs.Attributes = resourceData.Get("attributes").(string)
-	attrs.Location = resourceData.Get("location.value").(string)
-	attrs.Asset = resourceData.Get("asset.value").(string)
+	//attrs.Location  = resourceData.Get("location.value").(string)
+	attrs.Location = client.FlattenLinkRel("location", resourceData)
+	//attrs.Asset  = resourceData.Get("asset.value").(string)
+	attrs.Asset = client.FlattenLinkRel("asset", resourceData)
 	attrs.Category = resourceData.Get("category").(string)
 	attrs.FaultCount = resourceData.Get("fault_count").(string)
 	attrs.LeaseId = resourceData.Get("lease_id").(string)
@@ -1255,7 +1280,7 @@ func copyFromServiceNowToTerraformConfigurationItem(resourceData *schema.Resourc
 		//return err
 	}
 
-	resourceData.SetId(GetSysId(jsonData))
+	resourceData.SetId(client.GetSysId(jsonData))
 	attrs := ci.Result.Attributes
 	_ = resourceData.Set("attested_date", attrs.AttestedDate)
 	_ = resourceData.Set("skip_sync", attrs.SkipSync)
@@ -1274,64 +1299,88 @@ func copyFromServiceNowToTerraformConfigurationItem(resourceData *schema.Resourc
 	_ = resourceData.Set("warranty_expiration", attrs.WarrantyExpiration)
 	_ = resourceData.Set("asset_tag", attrs.AssetTag)
 	_ = resourceData.Set("fqdn", attrs.Fqdn)
-	_ = resourceData.Set("change_control", StructToMap(attrs.ChangeControl))
-	_ = resourceData.Set("owned_by", StructToMap(attrs.OwnedBy))
+	//_ = resourceData.Set("change_control", StructToMap(attrs.ChangeControl))
+	_ = resourceData.Set("change_control", client.StructToList(attrs.ChangeControl.Value, attrs.ChangeControl.Link, attrs.ChangeControl.DisplayValue))
+	//_ = resourceData.Set("owned_by", StructToMap(attrs.OwnedBy))
+	_ = resourceData.Set("owned_by", client.StructToList(attrs.OwnedBy.Value, attrs.OwnedBy.Link, attrs.OwnedBy.DisplayValue))
 	_ = resourceData.Set("checked_out", attrs.CheckedOut)
 	_ = resourceData.Set("sys_domain_path", attrs.SysDomainPath)
-	_ = resourceData.Set("business_unit", StructToMap(attrs.BusinessUnit))
+	//_ = resourceData.Set("business_unit", StructToMap(attrs.BusinessUnit))
+	_ = resourceData.Set("business_unit", client.StructToList(attrs.BusinessUnit.Value, attrs.BusinessUnit.Link, attrs.BusinessUnit.DisplayValue))
 	_ = resourceData.Set("delivery_date", attrs.DeliveryDate)
-	_ = resourceData.Set("maintenance_schedule", StructToMap(attrs.MaintenanceSchedule))
+	//_ = resourceData.Set("maintenance_schedule", StructToMap(attrs.MaintenanceSchedule))
+	_ = resourceData.Set("maintenance_schedule", client.StructToList(attrs.MaintenanceSchedule.Value, attrs.MaintenanceSchedule.Link, attrs.MaintenanceSchedule.DisplayValue))
 	_ = resourceData.Set("install_status", attrs.InstallStatus)
-	_ = resourceData.Set("cost_center", StructToMap(attrs.CostCenter))
-	_ = resourceData.Set("attested_by", StructToMap(attrs.AttestedBy))
-	_ = resourceData.Set("supported_by", StructToMap(attrs.SupportedBy))
+	//_ = resourceData.Set("cost_center", StructToMap(attrs.CostCenter))
+	_ = resourceData.Set("cost_center", client.StructToList(attrs.CostCenter.Value, attrs.CostCenter.Link, attrs.CostCenter.DisplayValue))
+	//_ = resourceData.Set("attested_by", StructToMap(attrs.AttestedBy))
+	_ = resourceData.Set("attested_by", client.StructToList(attrs.AttestedBy.Value, attrs.AttestedBy.Link, attrs.AttestedBy.DisplayValue))
+	//_ = resourceData.Set("supported_by", StructToMap(attrs.SupportedBy))
+	_ = resourceData.Set("supported_by", client.StructToList(attrs.SupportedBy.Value, attrs.SupportedBy.Link, attrs.SupportedBy.DisplayValue))
 	_ = resourceData.Set("dns_domain", attrs.DnsDomain)
 	_ = resourceData.Set("name", attrs.Name)
 	_ = resourceData.Set("assigned", attrs.Assigned)
 	_ = resourceData.Set("purchase_date", attrs.PurchaseDate)
 	_ = resourceData.Set("subcategory", attrs.Subcategory)
-	_ = resourceData.Set("life_cycle_stage", StructToMap(attrs.LifeCycleStage))
+	//_ = resourceData.Set("life_cycle_stage", StructToMap(attrs.LifeCycleStage))
+	_ = resourceData.Set("life_cycle_stage", client.StructToList(attrs.LifeCycleStage.Value, attrs.LifeCycleStage.Link, attrs.LifeCycleStage.DisplayValue))
 	_ = resourceData.Set("short_description", attrs.ShortDescription)
-	_ = resourceData.Set("assignment_group", StructToMap(attrs.AssignmentGroup))
-	_ = resourceData.Set("managed_by", StructToMap(attrs.ManagedBy))
-	_ = resourceData.Set("managed_by_group", StructToMap(attrs.ManagedByGroup))
+	//_ = resourceData.Set("assignment_group", StructToMap(attrs.AssignmentGroup))
+	_ = resourceData.Set("assignment_group", client.StructToList(attrs.AssignmentGroup.Value, attrs.AssignmentGroup.Link, attrs.AssignmentGroup.DisplayValue))
+	//_ = resourceData.Set("managed_by", StructToMap(attrs.ManagedBy))
+	_ = resourceData.Set("managed_by", client.StructToList(attrs.ManagedBy.Value, attrs.ManagedBy.Link, attrs.ManagedBy.DisplayValue))
+	//_ = resourceData.Set("managed_by_group", StructToMap(attrs.ManagedByGroup))
+	_ = resourceData.Set("managed_by_group", client.StructToList(attrs.ManagedByGroup.Value, attrs.ManagedByGroup.Link, attrs.ManagedByGroup.DisplayValue))
 	_ = resourceData.Set("last_discovered", attrs.LastDiscovered)
 	_ = resourceData.Set("can_print", attrs.CanPrint)
-	_ = resourceData.Set("manufacturer", StructToMap(attrs.Manufacturer))
+	//_ = resourceData.Set("manufacturer", StructToMap(attrs.Manufacturer))
+	_ = resourceData.Set("manufacturer", client.StructToList(attrs.Manufacturer.Value, attrs.Manufacturer.Link, attrs.Manufacturer.DisplayValue))
 	_ = resourceData.Set("po_number", attrs.PoNumber)
 	_ = resourceData.Set("checked_in", attrs.CheckedIn)
-	_ = resourceData.Set("vendor", StructToMap(attrs.Vendor))
-	_ = resourceData.Set("life_cycle_stage_status", StructToMap(attrs.LifeCycleStageStatus))
+	//_ = resourceData.Set("vendor", StructToMap(attrs.Vendor))
+	_ = resourceData.Set("vendor", client.StructToList(attrs.Vendor.Value, attrs.Vendor.Link, attrs.Vendor.DisplayValue))
+	//_ = resourceData.Set("life_cycle_stage_status", StructToMap(attrs.LifeCycleStageStatus))
+	_ = resourceData.Set("life_cycle_stage_status", client.StructToList(attrs.LifeCycleStageStatus.Value, attrs.LifeCycleStageStatus.Link, attrs.LifeCycleStageStatus.DisplayValue))
 	_ = resourceData.Set("mac_address", attrs.MacAddress)
-	_ = resourceData.Set("company", StructToMap(attrs.Company))
+	//_ = resourceData.Set("company", StructToMap(attrs.Company))
+	_ = resourceData.Set("company", client.StructToList(attrs.Company.Value, attrs.Company.Link, attrs.Company.DisplayValue))
 	_ = resourceData.Set("model_number", attrs.ModelNumber)
 	_ = resourceData.Set("justification", attrs.Justification)
-	_ = resourceData.Set("department", StructToMap(attrs.Department))
-	_ = resourceData.Set("assigned_to", StructToMap(attrs.AssignedTo))
+	//_ = resourceData.Set("department", StructToMap(attrs.Department))
+	_ = resourceData.Set("department", client.StructToList(attrs.Department.Value, attrs.Department.Link, attrs.Department.DisplayValue))
+	//_ = resourceData.Set("assigned_to", StructToMap(attrs.AssignedTo))
+	_ = resourceData.Set("assigned_to", client.StructToList(attrs.AssignedTo.Value, attrs.AssignedTo.Link, attrs.AssignedTo.DisplayValue))
 	_ = resourceData.Set("start_date", attrs.StartDate)
 	_ = resourceData.Set("cost", attrs.Cost)
 	_ = resourceData.Set("comments", attrs.Comments)
 	_ = resourceData.Set("attestation_status", attrs.AttestationStatus)
-	_ = resourceData.Set("cmdb_ot_entity", StructToMap(attrs.CmdbOtEntity))
+	//_ = resourceData.Set("cmdb_ot_entity", StructToMap(attrs.CmdbOtEntity))
+	_ = resourceData.Set("cmdb_ot_entity", client.StructToList(attrs.CmdbOtEntity.Value, attrs.CmdbOtEntity.Link, attrs.CmdbOtEntity.DisplayValue))
 	_ = resourceData.Set("sys_mod_count", attrs.SysModCount)
 	_ = resourceData.Set("serial_number", attrs.SerialNumber)
 	_ = resourceData.Set("monitor", attrs.Monitor)
-	_ = resourceData.Set("model_id", StructToMap(attrs.ModelId))
+	//_ = resourceData.Set("model_id", StructToMap(attrs.ModelId))
+	_ = resourceData.Set("model_id", client.StructToList(attrs.ModelId.Value, attrs.ModelId.Link, attrs.ModelId.DisplayValue))
 	_ = resourceData.Set("ip_address", attrs.IpAddress)
-	_ = resourceData.Set("duplicate_of", StructToMap(attrs.DuplicateOf))
+	//_ = resourceData.Set("duplicate_of", StructToMap(attrs.DuplicateOf))
+	_ = resourceData.Set("duplicate_of", client.StructToList(attrs.DuplicateOf.Value, attrs.DuplicateOf.Link, attrs.DuplicateOf.DisplayValue))
 	_ = resourceData.Set("sys_tags", attrs.SysTags)
 	_ = resourceData.Set("cost_cc", attrs.CostCc)
-	_ = resourceData.Set("support_group", StructToMap(attrs.SupportGroup))
+	//_ = resourceData.Set("support_group", StructToMap(attrs.SupportGroup))
+	_ = resourceData.Set("support_group", client.StructToList(attrs.SupportGroup.Value, attrs.SupportGroup.Link, attrs.SupportGroup.DisplayValue))
 	_ = resourceData.Set("order_date", attrs.OrderDate)
-	_ = resourceData.Set("schedule", StructToMap(attrs.Schedule))
+	//_ = resourceData.Set("schedule", StructToMap(attrs.Schedule))
+	_ = resourceData.Set("schedule", client.StructToList(attrs.Schedule.Value, attrs.Schedule.Link, attrs.Schedule.DisplayValue))
 	_ = resourceData.Set("environment", attrs.Environment)
 	_ = resourceData.Set("due", attrs.Due)
 	_ = resourceData.Set("attested", attrs.Attested)
 	_ = resourceData.Set("unverified", attrs.Unverified)
 	_ = resourceData.Set("correlation_id", attrs.CorrelationId)
 	_ = resourceData.Set("attributes", attrs.Attributes)
-	_ = resourceData.Set("location", StructToMap(attrs.Location))
-	_ = resourceData.Set("asset", StructToMap(attrs.Asset))
+	//_ = resourceData.Set("location", StructToMap(attrs.Location))
+	_ = resourceData.Set("location", client.StructToList(attrs.Location.Value, attrs.Location.Link, attrs.Location.DisplayValue))
+	//_ = resourceData.Set("asset", StructToMap(attrs.Asset))
+	_ = resourceData.Set("asset", client.StructToList(attrs.Asset.Value, attrs.Asset.Link, attrs.Asset.DisplayValue))
 	_ = resourceData.Set("category", attrs.Category)
 	_ = resourceData.Set("fault_count", attrs.FaultCount)
 	_ = resourceData.Set("lease_id", attrs.LeaseId)
