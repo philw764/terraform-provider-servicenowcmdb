@@ -4,11 +4,11 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-var CMDBConfigItemKeys []string
-var CMDBConfigItemExtendedKeys []string
+var CMDBConfigItemKeys = make(map[string]string)
 
 func CMDBSchema() map[string]*schema.Schema {
-	return map[string]*schema.Schema{
+
+	x := map[string]*schema.Schema{
 		"name": {
 			Type:     schema.TypeString,
 			Optional: true,
@@ -418,6 +418,7 @@ func CMDBSchema() map[string]*schema.Schema {
 			Optional: true,
 		},
 	}
+	return x
 }
 
 func referenceFieldSchema() map[string]*schema.Schema {
@@ -440,6 +441,6 @@ func referenceFieldSchema() map[string]*schema.Schema {
 
 func init() {
 	for k := range CMDBSchema() {
-		CMDBConfigItemKeys = append(CMDBConfigItemKeys, k)
+		CMDBConfigItemKeys[k] = "base"
 	}
 }

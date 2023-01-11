@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 type attribute struct {
@@ -263,32 +262,4 @@ func GetDataForCI(class string, sysid string, client *Client) (map[string]interf
 	}
 
 	return mapBuf, nil
-}
-
-func UpdateTFSchema(ciMetaModel CmdbCIMetaModel, ciData map[string]interface{}, resourceData *schema.ResourceData) error {
-
-	resourceData.SetId(ciData["sys_id"].(string))
-
-	resourceData.Set("sys_id", ciData["sys_id"].(string))
-	resourceData.Set("name", ciData["name"].(string))
-	attrs := make([]interface{}, len(ciMetaModel.Result.Attributes), len(ciMetaModel.Result.Attributes))
-	for i, rec := range ciMetaModel.Result.Attributes {
-		attr := make(map[string]interface{})
-
-		attr["attr_name"] = fmt.Sprintf("%s", rec.Element)
-
-		attr["attr_value"] = fmt.Sprintf("%s", ciData[rec.Element])
-		attr["attr_type"] = fmt.Sprintf(rec.Type)
-		attr["attr_label"] = fmt.Sprintf("%s", rec.Label)
-		//attr["attr_mandatory"] = fmt.Sprintf("%s", rec.IsMandatory)
-		//attr["attr_defaultvalue"] = fmt.Sprintf("%s", rec.DefaultValue)
-		//attr["attr_maxlength"] = fmt.Sprintf("%s", rec.MaxLength)
-
-		attrs[i] = attr
-	}
-	if err := resourceData.Set("attributes", &attrs); err != nil {
-		return err
-	}
-
-	return nil
 }

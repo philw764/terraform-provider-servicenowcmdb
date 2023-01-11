@@ -120,10 +120,9 @@ func GetSysId(jsonData []byte) string {
 	return sysId.Result.Attributes.SysId
 }
 
-// This function is used when updating the Terraform schema to unpack and update the fields that are
+// StructToMap This function is used when updating the Terraform schema to unpack and update the fields that are
 // reference attributes in ServiceNow.  For example "location" is a reference field.  A reference
-// field consists of 3 fields, "link", "value" and "display_value", "value" is the important field
-// the other fields are for aesthetics.
+// field consists of 3 fields, "link", "value" and "display_value".
 func StructToMap(in interface{}) map[string]interface{} {
 	m := make(map[string]interface{})
 	j, _ := json.Marshal(in)
@@ -132,22 +131,13 @@ func StructToMap(in interface{}) map[string]interface{} {
 	return m
 }
 
-func StructToList(value string, link string, display_value string) []interface{} {
+// StructToList This function creates a TypeList of values for reference fields.
+func StructToList(value string, link string, displayValue string) []interface{} {
 	result := make([]interface{}, 1, 1)
 	r := make(map[string]interface{})
-	r["display_value"] = display_value
+	r["display_value"] = displayValue
 	r["value"] = value
 	r["link"] = link
-	result[0] = r
-
-	return result
-
-}
-
-func StructToList2(value string) []interface{} {
-	result := make([]interface{}, 1, 1)
-	r := make(map[string]interface{})
-	r["value"] = value
 	result[0] = r
 
 	return result

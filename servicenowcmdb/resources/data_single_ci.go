@@ -3,6 +3,7 @@ package resources
 import (
 	"context"
 	"errors"
+	"fmt"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"terraform-provider-servicenowcmdb/servicenowcmdb/client"
@@ -10,96 +11,41 @@ import (
 
 func DataSingleCI() *schema.Resource {
 	return &schema.Resource{
-		ReadContext: readDataSingleCI,
+		ReadContext: readDataCI,
 
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"class": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"sys_id": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"filter": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"attributes": {
-				Type:     schema.TypeList,
-				Computed: true,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"attr_name": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"attr_value": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"attr_type": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"attr_is_reference": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"attr_is_inherited": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"attr_label": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"attr_element": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-					},
-				},
-			},
-		},
+		Schema: CMDBSchema(),
 	}
 }
 
-func readDataSingleCI(ctx context.Context, resourceData *schema.ResourceData, clientInterface interface{}) diag.Diagnostics {
+func readDataCI(ctx context.Context, resourceData *schema.ResourceData, clientInterface interface{}) diag.Diagnostics {
 	serviceNowClient := clientInterface.(*client.Client)
 	className := resourceData.Get("class").(string)
 	sysId := resourceData.Get("sys_id").(string)
-	ciname := resourceData.Get("name").(string)
+	name := resourceData.Get("name").(string)
 	filter := resourceData.Get("filter").(string)
 
 	if className == "" {
 		return diag.FromErr(errors.New("classname is missing, this must be specified"))
 	}
 
-	//If we don't have a name or a sys_id then return with an error
-	if sysId == "" && ciname == "" {
+	if sysId == "" && name == "" {
 		//TODO:return error, name or sys_id must be passed in
 		return diag.FromErr(errors.New("missing sysid and CI Name"))
 	}
 
-	//First we have to get the metadata model for the Class of the CI being queried
+	//Get the Metadata model for CI class, this is used to determine the CI fields
 	ciMetaDataModel := client.CmdbCIMetaModel{}
 	if err := client.GetCIMetaData(className, &ciMetaDataModel, serviceNowClient); err != nil {
 		return diag.FromErr(err)
 	}
 
-	//if we have a name and no sys_id then get the sys_id using the ciname as the sysparm_query
+	//if we have a name and no sys_id then get the sys_id using the name as the sysparm_query
 	var err error
 	if sysId == "" {
-		sysId, err = client.GetSysIDForCI(className, filter, ciname, serviceNowClient)
+		sysId, err = client.GetSysIDForCI(className, filter, name, serviceNowClient)
 		if err != nil || sysId == "" {
 			return diag.FromErr(err)
 		}
@@ -111,11 +57,57 @@ func readDataSingleCI(ctx context.Context, resourceData *schema.ResourceData, cl
 		return diag.FromErr(err)
 	}
 
-	if err := client.UpdateTFSchema(ciMetaDataModel, jsonBuf, resourceData); err != nil {
+	if err := UpdateTFSchema(ciMetaDataModel, jsonBuf, resourceData); err != nil {
 		return diag.FromErr(err)
 	}
-
-	//return diag.FromErr(errors.New(("this is returned:" + fmt.Sprintf("%s", jsonBuf["cost"]))))
 	return nil
 
+}
+
+// UpdateTFSchema This function updates the Terraform schema using the ciMetaModel to determine the map key and ciData to set the actual values.
+// Still need to handle reference attributes.
+func UpdateTFSchema(ciMetaModel client.CmdbCIMetaModel, ciData map[string]interface{}, resourceData *schema.ResourceData) error {
+
+	resourceData.SetId(ciData["sys_id"].(string))
+	resourceData.Set("sys_id", ciData["sys_id"].(string))
+	resourceData.Set("name", ciData["name"].(string))
+	resourceData.Set("filter", resourceData.Get("filter"))
+
+	attrs := make([]interface{}, 0, 0) //len(ciMetaModel.Result.Attributes), len(ciMetaModel.Result.Attributes))
+	for _, rec := range ciMetaModel.Result.Attributes {
+
+		if val, ok := CMDBConfigItemKeys[rec.Element]; ok && val == "base" {
+			if rec.Type == "reference" {
+
+				if ciData[rec.Element] != "" {
+
+					x := client.StructToMap(ciData[rec.Element])
+					if err := resourceData.Set(fmt.Sprintf("%s", rec.Element), client.StructToList(x["value"].(string), x["display_value"].(string), x["link"].(string))); err != nil {
+						return err
+					}
+				} else {
+					if err := resourceData.Set(fmt.Sprintf("%s", rec.Element), client.StructToList("", "", "")); err != nil {
+						return err
+					}
+				}
+				continue
+			}
+			if err := resourceData.Set(fmt.Sprintf("%s", rec.Element), fmt.Sprintf("%s", ciData[rec.Element])); err != nil {
+				return err
+			}
+		} else {
+			attr := make(map[string]interface{})
+			attr["attr_name"] = fmt.Sprintf("%s", rec.Element)
+			attr["attr_value"] = fmt.Sprintf("%s", ciData[rec.Element])
+			attr["attr_type"] = fmt.Sprintf(rec.Type)
+			attr["attr_label"] = fmt.Sprintf("%s", rec.Label)
+
+			attrs = append(attrs, attr)
+		}
+	}
+	if err := resourceData.Set("extended_attrs", &attrs); err != nil {
+		return err
+	}
+
+	return nil
 }
