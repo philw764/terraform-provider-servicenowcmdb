@@ -27,16 +27,16 @@ func CMDBSchema() map[string]*schema.Schema {
 		},
 		"extended_attrs": {
 			Type:     schema.TypeList,
-			Computed: true,
+			Optional: true,
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
 					"attr_name": {
 						Type:     schema.TypeString,
-						Computed: true,
+						Optional: true,
 					},
 					"attr_value": {
 						Type:     schema.TypeString,
-						Computed: true,
+						Optional: true,
 					},
 					"attr_type": {
 						Type:     schema.TypeString,
@@ -52,7 +52,7 @@ func CMDBSchema() map[string]*schema.Schema {
 					},
 					"attr_label": {
 						Type:     schema.TypeString,
-						Computed: true,
+						Optional: true,
 					},
 					"attr_element": {
 						Type:     schema.TypeString,
@@ -79,7 +79,7 @@ func CMDBSchema() map[string]*schema.Schema {
 		},
 		"attestation_score": {
 			Type:     schema.TypeString,
-			Optional: true,
+			Computed: true,
 		},
 		"discovery_source": {
 			Type:     schema.TypeString,
@@ -143,11 +143,11 @@ func CMDBSchema() map[string]*schema.Schema {
 		},
 		"checked_out": {
 			Type:     schema.TypeString,
-			Optional: true,
+			Computed: true,
 		},
 		"sys_domain_path": {
 			Type:     schema.TypeString,
-			Optional: true, Default: "/",
+			Computed: true,
 		},
 		"business_unit": {
 			Type:     schema.TypeList,

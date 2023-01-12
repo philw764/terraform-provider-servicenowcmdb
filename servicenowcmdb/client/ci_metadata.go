@@ -2,11 +2,13 @@ package client
 
 import (
 	"encoding/json"
-	"errors"
+	"fmt"
 )
 
 const MetaDataAPI = "/api/now/cmdb/meta/"
 
+// CmdbCIMetaModel - This structure is filled using the CMDB Meta API.  The CMDB Class defines
+// the CMDB table in ServiceNow, this structure defines the fields that make up this table.
 type CmdbCIMetaModel struct {
 	CiName           string
 	CiNameCamelCase  string
@@ -86,10 +88,10 @@ func GetCIMetaData(class string, responseObjectOut interface{}, client *Client) 
 	endpoint := MetaDataAPI + class
 	jsonResponse, err := client.RequestJSON("GET", endpoint, nil)
 	if err != nil {
-		return errors.New("Failed to get Metadata for class " + class)
+		return fmt.Errorf("Failed to get Metadata for class:%s  error: %s", class, err)
 	}
 	if err := json.Unmarshal(jsonResponse, responseObjectOut); err != nil {
-		return errors.New("Failed to Unmarshal json response for class " + class)
+		return fmt.Errorf("Failed to Unmarshal json response for class:%s   error:", class, err)
 	}
 	return nil
 }

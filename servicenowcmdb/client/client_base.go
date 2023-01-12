@@ -10,8 +10,6 @@ import (
 	"net/http"
 )
 
-const CMDBInstanceApi = "/api/now/cmdb/instance/"
-
 // Client HTTP Connector
 type Client struct {
 	BaseURL string
@@ -154,7 +152,7 @@ func FlattenLinkRel(linkRel string, resourceData *schema.ResourceData) string {
 }
 
 // requestJSON execute an HTTP request and returns the raw response data.
-func (client *Client) RequestJSON(method string, path string, jsonData interface{}) ([]byte, error) {
+func (client *Client) RequestJSON(method string, path string, jsonData any) ([]byte, error) {
 	var data *bytes.Buffer
 
 	if jsonData != nil {
@@ -176,10 +174,12 @@ func (client *Client) RequestJSON(method string, path string, jsonData interface
 	if err != nil {
 		return nil, err
 	}
+	//defer response.Body.Close()
 	responseData, _ := io.ReadAll(response.Body)
 
 	if response.StatusCode >= 300 || response.StatusCode < 200 {
 		return nil, fmt.Errorf("HTTP response status %s, %s", response.Status, responseData)
+		//return nil, err
 	}
 	return responseData, nil
 }

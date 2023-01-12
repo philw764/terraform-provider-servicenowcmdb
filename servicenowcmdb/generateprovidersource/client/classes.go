@@ -159,7 +159,7 @@ func requestJSON(method string, path string, jsonData interface{}, client *Clien
 		data = bytes.NewBuffer(nil)
 	}
 
-	request, _ := http.NewRequest(method, client.BaseURL+"/"+path, data)
+	request, _ := http.NewRequest(method, client.BaseURL+path, data)
 
 	// Add the needed headers.
 	request.Header.Set("Authorization", client.Auth)
@@ -168,7 +168,6 @@ func requestJSON(method string, path string, jsonData interface{}, client *Clien
 
 	httpClient := &http.Client{}
 	response, err := httpClient.Do(request)
-
 	if err != nil {
 		return nil, err
 	}

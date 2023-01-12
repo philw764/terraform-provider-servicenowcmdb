@@ -33,6 +33,7 @@ func Provider() *schema.Provider {
 		ResourcesMap: map[string]*schema.Resource{
 			"servicenowcmdb_windows_server": ResourceWindowsServer(),
 			"servicenowcmdb_ci":             ResourceConfigurationItem(),
+			"servicenowcmdb_single_ci":      ResourceSingleCI(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
 			"servicenowcmdb_single_ci": DataSingleCI(),
